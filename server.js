@@ -8,7 +8,9 @@ const { DOMESTIC_TOWNS, DOMESTIC_GATEWAYS, getTownsByGateway } = require('./dome
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://goelsewhere.travel', 'https://goelsewhere.travel', 'http://localhost:3000', 'http://localhost:3002']
+}));
 app.use(express.json());
 app.use(express.static('.'));
 
