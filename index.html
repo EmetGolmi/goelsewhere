@@ -886,7 +886,7 @@ async function findDestinations() {
   btn.classList.add('loading');
 
   try {
-    const resp = await fetch('http://localhost:3002/api/search', {
+    const resp = await fetch('https://goelsewhere-production.up.railway.app/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
