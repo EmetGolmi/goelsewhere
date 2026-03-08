@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const Amadeus = require('amadeus');
+const { ALL_EXPERIENCES } = require('./experiences');
+const { DOMESTIC_TOWNS, DOMESTIC_GATEWAYS, getTownsByGateway } = require('./domestic-towns');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -457,6 +459,23 @@ function getDates(timing, nights) {
   };
 }
 
+// ── /api/experiences ──
+app.get('/api/experiences', (req, res) => {
+  res.json(ALL_EXPERIENCES);
+});
+
+// ── /api/towns ──
+app.get('/api/towns', (req, res) => {
+  const grouped = {};
+  for (const [iata, gw] of Object.entries(DOMESTIC_GATEWAYS)) {
+    grouped[iata] = {
+      gateway: gw,
+      towns: getTownsByGateway(iata),
+    };
+  }
+  res.json(grouped);
+});
+
 // ── /api/flights ──
 app.post('/api/flights', async (req, res) => {
   const { origin, destination, timing, adults, children, nights } = req.body;
@@ -709,6 +728,65 @@ app.post('/api/search', async (req, res) => {
 
     return { ...d, score, estimatedCost, hopRoute, travelWarning };
   });
+
+  // ── Domestic small towns (when "Small Town Charm" vibe selected) ──
+  if (vibesArr.includes('Small Town Charm')) {
+    const domesticScored = DOMESTIC_TOWNS.map(t => {
+      let score = 0;
+
+      // Look up flight cost to the gateway
+      const gw = DOMESTIC_GATEWAYS[t.corridorId];
+      let flightCostPerPerson = t.flightCostPerPerson || 0;
+      if (gw && originCode) {
+        const match = gw.directFrom.find(d =>
+          Array.isArray(d.iata) ? d.iata.includes(originCode) : d.iata === originCode
+        );
+        if (match) {
+          // Parse avg round-trip cost from range like "$180–$280"
+          const nums = match.avgRt.match(/\d+/g);
+          flightCostPerPerson = nums ? Math.round((parseInt(nums[0]) + parseInt(nums[nums.length - 1])) / 2) : 250;
+        } else {
+          // No direct flight to this gateway — lower priority
+          flightCostPerPerson = 350;
+          score -= 10;
+        }
+      }
+
+      const estimatedCost =
+        (flightCostPerPerson * totalPeople) +
+        (t.nightlyHotelRate * nightsNum * roomsNum) +
+        (t.dailyExpensesPerPerson * nightsNum * totalPeople);
+
+      // Budget fit (same logic)
+      const ratio = estimatedCost / budgetNum;
+      if (ratio > 1.0) {
+        score -= Math.min(50, (ratio - 1.0) * 200);
+      } else if (ratio >= 0.6) {
+        score += 35 + 15 * ((ratio - 0.6) / 0.4);
+      } else {
+        score += 35 * (ratio / 0.6);
+      }
+
+      // Vibe match
+      const vibeMatches = vibesArr.filter(v =>
+        t.vibe && t.vibe.some(tv => tv.includes(v) || v.includes(tv.replace(/[^a-zA-Z ]/g,'').trim()))
+      ).length;
+      score += vibeMatches * 20;
+
+      // Domestic bonus — short travel, no passport
+      score += 10;
+
+      return {
+        ...t,
+        score,
+        estimatedCost,
+        flightCostPerPerson,
+        domestic: true,
+      };
+    });
+
+    scored.push(...domesticScored);
+  }
 
   const top5 = scored.sort((a, b) => b.score - a.score).slice(0, 5);
 
