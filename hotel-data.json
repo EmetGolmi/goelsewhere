@@ -1,0 +1,1115 @@
+{
+  "Antigua, Guatemala": {
+    "cityCode": "GUA",
+    "airportCode": "GUA",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Granada, Nicaragua": {
+    "cityCode": "MGA",
+    "airportCode": "MGA",
+    "hotels": [
+      {
+        "hotelId": "HIMGAAEE",
+        "name": "HOLIDAY INN CONVENTION CENTER",
+        "rateUSD": 99,
+        "originalRate": 99,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "CPMGA03A",
+        "name": "CROWNE PLAZA MANAGUA",
+        "rateUSD": 104.13,
+        "originalRate": 104.13,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "HIMGAE2A",
+        "name": "Holiday Inn Exp Managua",
+        "rateUSD": 128.8,
+        "originalRate": 128.8,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "ICMGAICB",
+        "name": "INTERCONTINENTAL MANAGUA",
+        "rateUSD": 266.8,
+        "originalRate": 266.8,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 116
+  },
+  "Bacalar, Mexico": {
+    "cityCode": "CUN",
+    "airportCode": "CUN",
+    "hotels": [
+      {
+        "hotelId": "WVCUN601",
+        "name": "THE ROYAL CANCUN",
+        "rateUSD": 350,
+        "originalRate": 350,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 350
+  },
+  "Oaxaca, Mexico": {
+    "cityCode": "OAX",
+    "airportCode": "OAX",
+    "hotels": [
+      {
+        "hotelId": "BWOAX119",
+        "name": "Best Western Posada Chahue",
+        "rateUSD": 72.56,
+        "originalRate": 1251,
+        "originalCurrency": "MXN"
+      },
+      {
+        "hotelId": "HIOAX1FF",
+        "name": "HOLIDAY INN EXP CENTRO HISTORI",
+        "rateUSD": 206.13,
+        "originalRate": 3554,
+        "originalCurrency": "MXN"
+      }
+    ],
+    "medianRate": 139
+  },
+  "Mexico City, Mexico": {
+    "cityCode": "MEX",
+    "airportCode": "MEX",
+    "hotels": [
+      {
+        "hotelId": "SIMEX738",
+        "name": "FOUR POINTS MEXICO CITY",
+        "rateUSD": 326.96,
+        "originalRate": 326.96,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "ICMEXICA",
+        "name": "INTERCONTINENTAL MEXICO CITY",
+        "rateUSD": 440.96,
+        "originalRate": 440.96,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 384
+  },
+  "San Ignacio, Belize": {
+    "cityCode": "BZE",
+    "airportCode": "BZE",
+    "hotels": [
+      {
+        "hotelId": "BWBZE302",
+        "name": "Best Western Plus Belize Biltmore Plaza",
+        "rateUSD": 151.14,
+        "originalRate": 151.14,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 151
+  },
+  "Placencia, Belize": {
+    "cityCode": "BZE",
+    "airportCode": "BZE",
+    "hotels": [
+      {
+        "hotelId": "BWBZE302",
+        "name": "Best Western Plus Belize Biltmore Plaza",
+        "rateUSD": 151.14,
+        "originalRate": 151.14,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 151
+  },
+  "Monteverde, Costa Rica": {
+    "cityCode": "SJO",
+    "airportCode": "SJO",
+    "hotels": [
+      {
+        "hotelId": "ALSJO637",
+        "name": "Aloft San Jose Hotel Costa Rica",
+        "rateUSD": 150.29,
+        "originalRate": 150.29,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "CPSJOA47",
+        "name": "Crowne Plaza Corobici",
+        "rateUSD": 197.75,
+        "originalRate": 197.75,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 174
+  },
+  "Bocas del Toro, Panama": {
+    "cityCode": "BOC",
+    "airportCode": "BOC",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Rincón, Puerto Rico": {
+    "cityCode": "BQN",
+    "airportCode": "BQN",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Las Terrenas, Dominican Republic": {
+    "cityCode": "SDQ",
+    "airportCode": "SDQ",
+    "hotels": [
+      {
+        "hotelId": "CPSDQICA",
+        "name": "Crowne Plaza Santo Domingo",
+        "rateUSD": 176.64,
+        "originalRate": 176.64,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "HISDQ8BA",
+        "name": "HOLIDAY INN SANTO DOMINGO",
+        "rateUSD": 208.64,
+        "originalRate": 208.64,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "ESSDQ963",
+        "name": "EMBASSY SUITES BY HILTON SANTO DOMINGO",
+        "rateUSD": 281.4,
+        "originalRate": 281.4,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 209
+  },
+  "Negril, Jamaica": {
+    "cityCode": "MBJ",
+    "airportCode": "MBJ",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Roatán, Honduras": {
+    "cityCode": "RTB",
+    "airportCode": "RTB",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Cartagena, Colombia": {
+    "cityCode": "CTG",
+    "airportCode": "CTG",
+    "hotels": [
+      {
+        "hotelId": "HXCTG225",
+        "name": "HAMPTON BY HILTON CARTAGENA",
+        "rateUSD": 151.08,
+        "originalRate": 629510,
+        "originalCurrency": "COP"
+      },
+      {
+        "hotelId": "HICTG278",
+        "name": "HOLIDAY INN CARTAGENA MORROS",
+        "rateUSD": 202.73,
+        "originalRate": 202.73,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "ICCTGEF3",
+        "name": "Intercontinental Cartagena De",
+        "rateUSD": 317.73,
+        "originalRate": 317.73,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 203
+  },
+  "Medellín, Colombia": {
+    "cityCode": "MDE",
+    "airportCode": "MDE",
+    "hotels": [
+      {
+        "hotelId": "HIMDE117",
+        "name": "HOLIDAY INN EXP MEDELLIN LA ST",
+        "rateUSD": 159.46,
+        "originalRate": 159.46,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "ICMDEICA",
+        "name": "INTERCONTINENTAL MEDELLIN",
+        "rateUSD": 295.12,
+        "originalRate": 295.12,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 227
+  },
+  "Quito, Ecuador": {
+    "cityCode": "UIO",
+    "airportCode": "UIO",
+    "hotels": [
+      {
+        "hotelId": "HIUIO01E",
+        "name": "HOLIDAY INN EXPRESS QUITO",
+        "rateUSD": 144,
+        "originalRate": 144,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 144
+  },
+  "Galápagos, Ecuador": {
+    "cityCode": "GPS",
+    "airportCode": "GPS",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Cusco, Peru": {
+    "cityCode": "CUZ",
+    "airportCode": "CUZ",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Buenos Aires, Argentina": {
+    "cityCode": "BUE",
+    "airportCode": "EZE",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Patagonia, Argentina": {
+    "cityCode": "FTE",
+    "airportCode": "FTE",
+    "hotels": [],
+    "medianRate": null
+  },
+  "La Paz, Bolivia": {
+    "cityCode": "LPB",
+    "airportCode": "LPB",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Salvador, Brazil": {
+    "cityCode": "SSA",
+    "airportCode": "SSA",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Hanoi, Vietnam": {
+    "cityCode": "HAN",
+    "airportCode": "HAN",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Da Nang, Vietnam": {
+    "cityCode": "DAD",
+    "airportCode": "DAD",
+    "hotels": [
+      {
+        "hotelId": "CPDADCB4",
+        "name": "CROWNE PLAZA DANANG",
+        "rateUSD": 191,
+        "originalRate": 191,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "ICDADICA",
+        "name": "INTERCONTINENTAL DANANG RESORT",
+        "rateUSD": 620.09,
+        "originalRate": 620.09,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 406
+  },
+  "Siem Reap, Cambodia": {
+    "cityCode": "REP",
+    "airportCode": "REP",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Chiang Mai, Thailand": {
+    "cityCode": "CNX",
+    "airportCode": "CNX",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Bangkok, Thailand": {
+    "cityCode": "BKK",
+    "airportCode": "BKK",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Bali, Indonesia": {
+    "cityCode": "DPS",
+    "airportCode": "DPS",
+    "hotels": [
+      {
+        "hotelId": "BWDPS036",
+        "name": "Best Western Kuta Villa",
+        "rateUSD": 53.62,
+        "originalRate": 851124,
+        "originalCurrency": "IDR"
+      },
+      {
+        "hotelId": "HIDPSC0A",
+        "name": "HOLIDAY INN RESORT BARUNA",
+        "rateUSD": 117.37,
+        "originalRate": 117.37,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "SIDPS556",
+        "name": "Sheraton Bali Kuta Resort",
+        "rateUSD": 171.52,
+        "originalRate": 2722500,
+        "originalCurrency": "IDR"
+      }
+    ],
+    "medianRate": 117
+  },
+  "Luang Prabang, Laos": {
+    "cityCode": "LPQ",
+    "airportCode": "LPQ",
+    "hotels": [],
+    "medianRate": null
+  },
+  "El Nido, Philippines": {
+    "cityCode": "PPS",
+    "airportCode": "PPS",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Goa, India": {
+    "cityCode": "GOI",
+    "airportCode": "GOI",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Kerala, India": {
+    "cityCode": "COK",
+    "airportCode": "COK",
+    "hotels": [
+      {
+        "hotelId": "HICOKD9E",
+        "name": "HOLIDAY INN COCHIN",
+        "rateUSD": 94.83,
+        "originalRate": 7902.72,
+        "originalCurrency": "INR"
+      },
+      {
+        "hotelId": "MDCOKMER",
+        "name": "Le Meridien Kochi",
+        "rateUSD": 94.87,
+        "originalRate": 7906,
+        "originalCurrency": "INR"
+      }
+    ],
+    "medianRate": 95
+  },
+  "Rajasthan, India": {
+    "cityCode": "JAI",
+    "airportCode": "JAI",
+    "hotels": [
+      {
+        "hotelId": "HIJAI966",
+        "name": "Holiday Inn Jaipur City Centre",
+        "rateUSD": 301.46,
+        "originalRate": 25121.54,
+        "originalCurrency": "INR"
+      }
+    ],
+    "medianRate": 301
+  },
+  "Galle, Sri Lanka": {
+    "cityCode": "CMB",
+    "airportCode": "CMB",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Tokyo, Japan": {
+    "cityCode": "TYO",
+    "airportCode": "NRT",
+    "hotels": [
+      {
+        "hotelId": "SITYO361",
+        "name": "Sheraton Grande Tokyo Bay Hotel",
+        "rateUSD": 162.81,
+        "originalRate": 24300,
+        "originalCurrency": "JPY"
+      },
+      {
+        "hotelId": "RZTYORZZ",
+        "name": "The Ritz-Carlton Tokyo",
+        "rateUSD": 1028.58,
+        "originalRate": 153520,
+        "originalCurrency": "JPY"
+      }
+    ],
+    "medianRate": 596
+  },
+  "Kyoto, Japan": {
+    "cityCode": "OSA",
+    "airportCode": "KIX",
+    "hotels": [
+      {
+        "hotelId": "SIOSA092",
+        "name": "Sheraton Miyako Hotel Osaka",
+        "rateUSD": 153.7,
+        "originalRate": 22940,
+        "originalCurrency": "JPY"
+      },
+      {
+        "hotelId": "ICOSA433",
+        "name": "InterContinental Osaka",
+        "rateUSD": 530.64,
+        "originalRate": 79200,
+        "originalCurrency": "JPY"
+      }
+    ],
+    "medianRate": 342
+  },
+  "Seoul, South Korea": {
+    "cityCode": "SEL",
+    "airportCode": "ICN",
+    "hotels": [
+      {
+        "hotelId": "ICSELICA",
+        "name": "GRAND INTERCONTINENTAL SEOUL",
+        "rateUSD": 435.6,
+        "originalRate": 580800,
+        "originalCurrency": "KRW"
+      }
+    ],
+    "medianRate": 436
+  },
+  "Istanbul, Turkey": {
+    "cityCode": "IST",
+    "airportCode": "IST",
+    "hotels": [
+      {
+        "hotelId": "CPIST11A",
+        "name": "Crowne Plaza Oryapark",
+        "rateUSD": 168.13,
+        "originalRate": 155.68,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 168
+  },
+  "Cappadocia, Turkey": {
+    "cityCode": "NAV",
+    "airportCode": "NAV",
+    "hotels": [
+      {
+        "hotelId": "HLNAV848",
+        "name": "DOUBLETREE AVANOS CAPPADOCIA",
+        "rateUSD": 194.84,
+        "originalRate": 180.41,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 195
+  },
+  "Petra, Jordan": {
+    "cityCode": "AMM",
+    "airportCode": "AMM",
+    "hotels": [
+      {
+        "hotelId": "CPAMM01C",
+        "name": "CROWNE PLAZA AMMAN AMRA",
+        "rateUSD": 123.84,
+        "originalRate": 87.83,
+        "originalCurrency": "JOD"
+      },
+      {
+        "hotelId": "HIAMM832",
+        "name": "HOLIDAY INN DEAD SEA RESORT",
+        "rateUSD": 174.35,
+        "originalRate": 123.65,
+        "originalCurrency": "JOD"
+      },
+      {
+        "hotelId": "SIAMM239",
+        "name": "Sheraton Amman Al Nabil Hotel",
+        "rateUSD": 174.52,
+        "originalRate": 123.77,
+        "originalCurrency": "JOD"
+      },
+      {
+        "hotelId": "CPAMM74F",
+        "name": "CROWNE PLAZA DEAD SEA JORDAN",
+        "rateUSD": 175.95,
+        "originalRate": 124.79,
+        "originalCurrency": "JOD"
+      },
+      {
+        "hotelId": "ICAMMICA",
+        "name": "INTERCONTINENTAL JORDAN",
+        "rateUSD": 190.65,
+        "originalRate": 135.21,
+        "originalCurrency": "JOD"
+      }
+    ],
+    "medianRate": 175
+  },
+  "Muscat, Oman": {
+    "cityCode": "MCT",
+    "airportCode": "MCT",
+    "hotels": [
+      {
+        "hotelId": "CPMCT81B",
+        "name": "CROWNE PLAZA SOHAR",
+        "rateUSD": 86.24,
+        "originalRate": 33.17,
+        "originalCurrency": "OMR"
+      },
+      {
+        "hotelId": "SIMCT167",
+        "name": "Sheraton Oman Hotel",
+        "rateUSD": 122.59,
+        "originalRate": 47.151,
+        "originalCurrency": "OMR"
+      },
+      {
+        "hotelId": "HIMCTB6A",
+        "name": "Holiday Inn Muscat Al Seeb",
+        "rateUSD": 202.46,
+        "originalRate": 77.87,
+        "originalCurrency": "OMR"
+      },
+      {
+        "hotelId": "ICMCTICA",
+        "name": "INTERCONTINENTAL MUSCAT",
+        "rateUSD": 207.61,
+        "originalRate": 79.85,
+        "originalCurrency": "OMR"
+      },
+      {
+        "hotelId": "CPMCT923",
+        "name": "CROWNE PLAZA",
+        "rateUSD": 256.41,
+        "originalRate": 98.62,
+        "originalCurrency": "OMR"
+      }
+    ],
+    "medianRate": 202
+  },
+  "Cairo, Egypt": {
+    "cityCode": "CAI",
+    "airportCode": "CAI",
+    "hotels": [
+      {
+        "hotelId": "HICAI074",
+        "name": "Holiday Inn Cairo Maadi",
+        "rateUSD": 132.83,
+        "originalRate": 132.83,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "HLCAI211",
+        "name": "HILTON CAIRO ZAMALEK RESIDENCE",
+        "rateUSD": 209.49,
+        "originalRate": 209.49,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "MDCAI265",
+        "name": "Le Meridien Cairo Airport",
+        "rateUSD": 219.23,
+        "originalRate": 219.23,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "YZCAIC68",
+        "name": "STAYBRIDGE SUITES CAIRO CITY S",
+        "rateUSD": 237.29,
+        "originalRate": 237.29,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 214
+  },
+  "Marrakech, Morocco": {
+    "cityCode": "RAK",
+    "airportCode": "RAK",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Essaouira, Morocco": {
+    "cityCode": "ESU",
+    "airportCode": "ESU",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Zanzibar, Tanzania": {
+    "cityCode": "ZNZ",
+    "airportCode": "ZNZ",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Cape Town, South Africa": {
+    "cityCode": "CPT",
+    "airportCode": "CPT",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Masai Mara, Kenya": {
+    "cityCode": "NBO",
+    "airportCode": "NBO",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Stone Town, Mozambique": {
+    "cityCode": "MPM",
+    "airportCode": "MPM",
+    "hotels": [
+      {
+        "hotelId": "SUMPM09A",
+        "name": "SOUTHERN SUN MAPUTO",
+        "rateUSD": 219,
+        "originalRate": 219,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 219
+  },
+  "Bucharest, Romania": {
+    "cityCode": "OTP",
+    "airportCode": "OTP",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Budapest, Hungary": {
+    "cityCode": "BUD",
+    "airportCode": "BUD",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Kraków, Poland": {
+    "cityCode": "KRK",
+    "airportCode": "KRK",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Tbilisi, Georgia": {
+    "cityCode": "TBS",
+    "airportCode": "TBS",
+    "hotels": [
+      {
+        "hotelId": "HITBS9F3",
+        "name": "HOLIDAY INN TBILISI",
+        "rateUSD": 188.8,
+        "originalRate": 188.8,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "SITBS132",
+        "name": "Sheraton Grand Tbilisi Metechi Palace Hotel",
+        "rateUSD": 472,
+        "originalRate": 472,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 330
+  },
+  "Kotor, Montenegro": {
+    "cityCode": "TIV",
+    "airportCode": "TIV",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Thessaloniki, Greece": {
+    "cityCode": "SKG",
+    "airportCode": "SKG",
+    "hotels": [
+      {
+        "hotelId": "ONSKGELE",
+        "name": "ELECTRA PALACE HOTEL THESSALONIKI",
+        "rateUSD": 262.44,
+        "originalRate": 243,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 262
+  },
+  "Valletta, Malta": {
+    "cityCode": "MLA",
+    "airportCode": "MLA",
+    "hotels": [
+      {
+        "hotelId": "ICMLAICA",
+        "name": "INTERCONTINENTAL MALTA",
+        "rateUSD": 198.72,
+        "originalRate": 184,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 199
+  },
+  "Porto, Portugal": {
+    "cityCode": "OPO",
+    "airportCode": "OPO",
+    "hotels": [
+      {
+        "hotelId": "ICOPO98A",
+        "name": "INTERCONTINENTAL PALACIO DAS",
+        "rateUSD": 386.64,
+        "originalRate": 358,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 387
+  },
+  "Seville, Spain": {
+    "cityCode": "SVQ",
+    "airportCode": "SVQ",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Hvar, Croatia": {
+    "cityCode": "SPU",
+    "airportCode": "SPU",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Dubrovnik, Croatia": {
+    "cityCode": "DBV",
+    "airportCode": "DBV",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Québec City, Canada": {
+    "cityCode": "YQB",
+    "airportCode": "YQB",
+    "hotels": [
+      {
+        "hotelId": "BWYQB007",
+        "name": "Best Western Premier Hotel Aristocrate",
+        "rateUSD": 87.18,
+        "originalRate": 117.81,
+        "originalCurrency": "CAD"
+      }
+    ],
+    "medianRate": 87
+  },
+  "Edinburgh, Scotland": {
+    "cityCode": "EDI",
+    "airportCode": "EDI",
+    "hotels": [
+      {
+        "hotelId": "HIEDI0CB",
+        "name": "HOLIDAY INN EXPRESS ROYAL MILE",
+        "rateUSD": 280.67,
+        "originalRate": 221,
+        "originalCurrency": "GBP"
+      }
+    ],
+    "medianRate": 281
+  },
+  "San Sebastián, Spain": {
+    "cityCode": "EAS",
+    "airportCode": "EAS",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Reykjavik, Iceland": {
+    "cityCode": "KEF",
+    "airportCode": "KEF",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Santorini, Greece": {
+    "cityCode": "JTR",
+    "airportCode": "JTR",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Amalfi Coast, Italy": {
+    "cityCode": "NAP",
+    "airportCode": "NAP",
+    "hotels": [
+      {
+        "hotelId": "HSNAPAGL",
+        "name": "Mini",
+        "rateUSD": 177.66,
+        "originalRate": 164.5,
+        "originalCurrency": "EUR"
+      },
+      {
+        "hotelId": "HSNAPAMK",
+        "name": "Mary",
+        "rateUSD": 540,
+        "originalRate": 500,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 359
+  },
+  "French Riviera, France": {
+    "cityCode": "NCE",
+    "airportCode": "NCE",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Bergen, Norway": {
+    "cityCode": "BGO",
+    "airportCode": "BGO",
+    "hotels": [
+      {
+        "hotelId": "BWBGO083",
+        "name": "BEST WESTERN HOTELL HORDAHEIMEN",
+        "rateUSD": 96.14,
+        "originalRate": 1012,
+        "originalCurrency": "NOK"
+      }
+    ],
+    "medianRate": 96
+  },
+  "Lofoten Islands, Norway": {
+    "cityCode": "EVE",
+    "airportCode": "EVE",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Swiss Alps, Switzerland": {
+    "cityCode": "ZRH",
+    "airportCode": "ZRH",
+    "hotels": [
+      {
+        "hotelId": "CPZRHICA",
+        "name": "CROWNE PLAZA ZURICH",
+        "rateUSD": 201.14,
+        "originalRate": 178,
+        "originalCurrency": "CHF"
+      },
+      {
+        "hotelId": "SIZRH732",
+        "name": "Sheraton Zurich Hotel",
+        "rateUSD": 343.12,
+        "originalRate": 303.65,
+        "originalCurrency": "CHF"
+      }
+    ],
+    "medianRate": 272
+  },
+  "Lapland, Finland": {
+    "cityCode": "RVN",
+    "airportCode": "RVN",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Hoi An, Vietnam": {
+    "cityCode": "DAD",
+    "airportCode": "DAD",
+    "hotels": [
+      {
+        "hotelId": "CPDADCB4",
+        "name": "CROWNE PLAZA DANANG",
+        "rateUSD": 191,
+        "originalRate": 191,
+        "originalCurrency": "USD"
+      },
+      {
+        "hotelId": "ICDADICA",
+        "name": "INTERCONTINENTAL DANANG RESORT",
+        "rateUSD": 620.09,
+        "originalRate": 620.09,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 406
+  },
+  "Chefchaouen, Morocco": {
+    "cityCode": "TNG",
+    "airportCode": "TNG",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Mumbai, India": {
+    "cityCode": "BOM",
+    "airportCode": "BOM",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Valencia, Spain": {
+    "cityCode": "VLC",
+    "airportCode": "VLC",
+    "hotels": [
+      {
+        "hotelId": "ARVLCVAL",
+        "name": "AC by Marriott Hotel Valencia",
+        "rateUSD": 224.53,
+        "originalRate": 207.9,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 225
+  },
+  "Bruges, Belgium": {
+    "cityCode": "BRU",
+    "airportCode": "BRU",
+    "hotels": [
+      {
+        "hotelId": "ONBRUONC",
+        "name": "ZOOM HOTEL",
+        "rateUSD": 163.24,
+        "originalRate": 151.15,
+        "originalCurrency": "EUR"
+      },
+      {
+        "hotelId": "ONBRUDIX",
+        "name": "LE DIXSEPTIEME HOTEL",
+        "rateUSD": 247.58,
+        "originalRate": 229.24,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 205
+  },
+  "Colmar, France": {
+    "cityCode": "SXB",
+    "airportCode": "SXB",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Cotswolds, England": {
+    "cityCode": "BRS",
+    "airportCode": "BRS",
+    "hotels": [
+      {
+        "hotelId": "VMBRS3FC",
+        "name": "TEST PROPERTY RX1",
+        "rateUSD": 324,
+        "originalRate": 300,
+        "originalCurrency": "EUR"
+      },
+      {
+        "hotelId": "PIBRSAAY",
+        "name": "Bristol South",
+        "rateUSD": 1294.1,
+        "originalRate": 1018.98,
+        "originalCurrency": "GBP"
+      }
+    ],
+    "medianRate": 809
+  },
+  "Rio de Janeiro, Brazil": {
+    "cityCode": "RIO",
+    "airportCode": "GIG",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Provence, France": {
+    "cityCode": "MRS",
+    "airportCode": "MRS",
+    "hotels": [
+      {
+        "hotelId": "BWMRS734",
+        "name": "Best Western Plus Hotel La Joliette",
+        "rateUSD": 169.51,
+        "originalRate": 156.95,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 170
+  },
+  "Hallstatt, Austria": {
+    "cityCode": "SZG",
+    "airportCode": "SZG",
+    "hotels": [
+      {
+        "hotelId": "HISZG493",
+        "name": "HOLIDAY INN SALZBURG CITY",
+        "rateUSD": 150.23,
+        "originalRate": 139.1,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 150
+  },
+  "Cinque Terre, Italy": {
+    "cityCode": "PSA",
+    "airportCode": "PSA",
+    "hotels": [
+      {
+        "hotelId": "CHPSAHTP",
+        "name": "HOTEL TERMINUS PLAZA",
+        "rateUSD": 124.2,
+        "originalRate": 115,
+        "originalCurrency": "EUR"
+      }
+    ],
+    "medianRate": 124
+  },
+  "Tuscany, Italy": {
+    "cityCode": "FLR",
+    "airportCode": "FLR",
+    "hotels": [],
+    "medianRate": null
+  },
+  "Queenstown, New Zealand": {
+    "cityCode": "ZQN",
+    "airportCode": "ZQN",
+    "hotels": [
+      {
+        "hotelId": "ONZQNBEL",
+        "name": "BELLA VISTA MOTEL QUEENSTOWN",
+        "rateUSD": 115.9,
+        "originalRate": 190,
+        "originalCurrency": "NZD"
+      },
+      {
+        "hotelId": "CPZQN150",
+        "name": "CROWNE PLAZA",
+        "rateUSD": 186.05,
+        "originalRate": 305,
+        "originalCurrency": "NZD"
+      }
+    ],
+    "medianRate": 151
+  },
+  "Maldives": {
+    "cityCode": "MLE",
+    "airportCode": "MLE",
+    "hotels": [
+      {
+        "hotelId": "WHMLE585",
+        "name": "W Maldives",
+        "rateUSD": 2618.83,
+        "originalRate": 2618.83,
+        "originalCurrency": "USD"
+      }
+    ],
+    "medianRate": 2619
+  },
+  "Bora Bora, French Polynesia": {
+    "cityCode": "BOB",
+    "airportCode": "BOB",
+    "hotels": [
+      {
+        "hotelId": "ICBOBICA",
+        "name": "INTERCONTINENTAL BORA LE MOANA",
+        "rateUSD": 1347.49,
+        "originalRate": 148076,
+        "originalCurrency": "XPF"
+      },
+      {
+        "hotelId": "ICBOBICB",
+        "name": "INTERCONTINENTAL BORA THALASSO",
+        "rateUSD": 1394.01,
+        "originalRate": 153188,
+        "originalCurrency": "XPF"
+      },
+      {
+        "hotelId": "XRBOB743",
+        "name": "The St Regis Bora Bora Resort",
+        "rateUSD": 2088.55,
+        "originalRate": 229511,
+        "originalCurrency": "XPF"
+      }
+    ],
+    "medianRate": 1394
+  }
+}
