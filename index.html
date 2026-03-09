@@ -508,6 +508,47 @@
     color: rgba(245,240,232,0.6);
     white-space: nowrap;
   }
+  .result-unesco {
+    font-size: 0.65rem;
+    background: rgba(212,168,68,0.12);
+    border: 1px solid rgba(212,168,68,0.25);
+    border-radius: 20px;
+    padding: 2px 8px;
+    color: var(--gold);
+    white-space: nowrap;
+    display: inline-block;
+    margin-top: 5px;
+  }
+  .result-snow-pill {
+    font-size: 0.65rem;
+    background: rgba(143,188,143,0.12);
+    border: 1px solid rgba(143,188,143,0.25);
+    border-radius: 20px;
+    padding: 2px 8px;
+    color: #8fbc8f;
+    white-space: nowrap;
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 4px;
+  }
+  .result-train-badge {
+    font-size: 0.65rem;
+    background: rgba(201,122,90,0.12);
+    border: 1px solid rgba(201,122,90,0.25);
+    border-radius: 20px;
+    padding: 2px 8px;
+    color: #c97a5a;
+    white-space: nowrap;
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 4px;
+  }
+  .result-vibe {
+    font-size: 0.75rem;
+    color: rgba(245,240,232,0.5);
+    font-style: italic;
+    margin-top: 2px;
+  }
   .result-card-wrap {
     margin-bottom: 0.5rem;
   }
@@ -1155,6 +1196,23 @@ function renderResults(results, budget, isWhiteChristmas) {
       ? `<div class="result-xmas">\u2713 Dec 24 & Dec 31 in-destination guaranteed</div>`
       : '';
 
+    // UNESCO pill
+    const unescoPill = d.unesco
+      ? `<span class="result-unesco">\u{1F3DB} ${d.unescoLabel || 'UNESCO World Heritage Site'}</span>`
+      : '';
+
+    // Christmas town pills
+    const snowLabels = { guaranteed: '\u2744\uFE0F Guaranteed snow', high: '\u2744\uFE0F Snow likely', moderate: '\u{1F328}\uFE0F Snow possible' };
+    const snowPill = d.snowReliability
+      ? `<span class="result-snow-pill">${snowLabels[d.snowReliability] || ''}</span>`
+      : '';
+    const trainBadge = d.trainTown
+      ? `<span class="result-train-badge">\u{1F682} Christmas train</span>`
+      : '';
+    const vibeSub = d.vibe
+      ? `<div class="result-vibe">${d.vibe}</div>`
+      : '';
+
     // Lodging tags — show top 2 most distinctive
     let lodgingHtml = '';
     if (d.lodgingTypes && d.lodgingTypes.length) {
@@ -1186,8 +1244,11 @@ function renderResults(results, budget, isWhiteChristmas) {
         <span class="result-flag">${d.flag}</span>
         <div class="result-body">
           <div class="result-name">${d.name}</div>
+          ${vibeSub}
           <div class="result-why">${d.why}</div>
           ${tierNote}
+          ${unescoPill}
+          ${snowPill}${trainBadge}
           ${lodgingHtml}
           ${hopNote}
           ${travelWarn}

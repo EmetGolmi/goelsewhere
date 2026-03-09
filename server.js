@@ -5,6 +5,8 @@ const { Duffel } = require('@duffel/api');
 const { ALL_EXPERIENCES } = require('./experiences');
 const { DOMESTIC_TOWNS, DOMESTIC_GATEWAYS, getTownsByGateway } = require('./domestic-towns');
 const { WORLD_PARKS } = require('./world_parks_data');
+const { CHRISTMAS_TOWNS } = require('./christmas-towns.js');
+const { UNESCO_TIER2 } = require('./unesco-tier2.js');
 const zipcodes = require('zipcodes');
 
 const app = express();
@@ -361,6 +363,17 @@ const destinationIATA = {
   'Queenstown, New Zealand': 'ZQN',
   'Maldives': 'MLE',
   'Bora Bora, French Polynesia': 'BOB',
+  // UNESCO Tier 2
+  'Chichén Itzá, Mexico': 'CUN',
+  'Iguazú Falls, Argentina': 'IGR',
+  'Granada, Spain': 'GRX',
+  'Prague, Czech Republic': 'PRG',
+  'Fez, Morocco': 'FEZ',
+  'Victoria Falls, Zambia': 'LVI',
+  'Bagan, Myanmar': 'NYU',
+  'Ha Long Bay, Vietnam': 'HAN',
+  'Serengeti, Tanzania': 'JRO',
+  'Uluru, Australia': 'AYQ',
 };
 
 // ── Nonstop/1-stop route map from major US airports ──
@@ -731,6 +744,26 @@ app.get('/api/parks', (req, res) => {
   res.json(parks);
 });
 
+// ── /api/christmas-towns ──
+app.get('/api/christmas-towns', (req, res) => {
+  const { trainTown, snow, region, maxNightly } = req.query;
+  let towns = [...CHRISTMAS_TOWNS];
+  if (trainTown === 'true') towns = towns.filter(t => t.trainTown === true);
+  if (snow) towns = towns.filter(t => t.snowReliability === snow);
+  if (region) towns = towns.filter(t => t.region.toLowerCase().includes(region.toLowerCase()));
+  if (maxNightly) towns = towns.filter(t => t.nightlyMid <= parseInt(maxNightly));
+  res.json({ towns, total: towns.length });
+});
+
+// ── /api/unesco ──
+app.get('/api/unesco', (req, res) => {
+  const { region, vibe } = req.query;
+  let sites = UNESCO_TIER2.filter(s => !s.alreadyInCorridors);
+  if (region) sites = sites.filter(s => s.region.toLowerCase().includes(region.toLowerCase()));
+  if (vibe) sites = sites.filter(s => s.vibes && s.vibes.includes(vibe));
+  res.json({ sites, total: sites.length });
+});
+
 // ── /api/flights ──
 app.post('/api/flights', async (req, res) => {
   const { origin, destination, timing, adults, children, nights } = req.body;
@@ -796,18 +829,18 @@ app.post('/api/search', async (req, res) => {
     // ── ULTRA-BUDGET ──
     { flag:'🇬🇹', name:'Antigua, Guatemala', why:'Cobblestone streets under three volcanoes, Spanish colonial churches, and $2 street food that rivals fine dining.', flightCostPerPerson:300, nightlyHotelRate:40, dailyExpensesPerPerson:30, tags:['City & Culture','Off the Map','Small Town Charm'], timing:['Winter Escape','Spring Break','Fall',"I'm Flexible"] },
     { flag:'🇳🇮', name:'Granada, Nicaragua', why:'Candy-colored colonial city on a lake full of tiny volcanic islands. Central America\'s best-kept secret.', flightCostPerPerson:350, nightlyHotelRate:35, dailyExpensesPerPerson:25, tags:['City & Culture','Off the Map','Small Town Charm'], timing:['Winter Escape','Spring Break',"I'm Flexible"] },
-    { flag:'🇰🇭', name:'Siem Reap, Cambodia', why:'Angkor Wat at sunrise, night markets, $1 beers. A place that rewires how you think about travel.', flightCostPerPerson:550, nightlyHotelRate:25, dailyExpensesPerPerson:15, tags:['City & Culture','Off the Map'], timing:['Winter Escape','Fall',"I'm Flexible"] },
-    { flag:'🇻🇳', name:'Hanoi, Vietnam', why:'Thousand-year-old temples, pho on every corner, motorbike chaos that somehow works. Absurdly cheap.', flightCostPerPerson:550, nightlyHotelRate:30, dailyExpensesPerPerson:20, tags:['City & Culture','Off the Map'], timing:['Spring Break','Fall','Winter Escape',"I'm Flexible"] },
+    { flag:'🇰🇭', name:'Siem Reap, Cambodia', why:'Angkor Wat at sunrise, night markets, $1 beers. A place that rewires how you think about travel.', flightCostPerPerson:550, nightlyHotelRate:25, dailyExpensesPerPerson:15, tags:['City & Culture','Off the Map'], timing:['Winter Escape','Fall',"I'm Flexible"], unesco:true, unescoSite:'Angkor', unescoYear:1992 },
+    { flag:'🇻🇳', name:'Hanoi, Vietnam', why:'Thousand-year-old temples, pho on every corner, motorbike chaos that somehow works. Absurdly cheap.', flightCostPerPerson:550, nightlyHotelRate:30, dailyExpensesPerPerson:20, tags:['City & Culture','Off the Map'], timing:['Spring Break','Fall','Winter Escape',"I'm Flexible"], unesco:true, unescoSite:'Ha Long Bay', unescoYear:1994 },
     { flag:'🇹🇭', name:'Chiang Mai, Thailand', why:'Mountain temples, night bazaars, Thai cooking classes for $15. The digital nomad capital for a reason.', flightCostPerPerson:550, nightlyHotelRate:30, dailyExpensesPerPerson:20, tags:['City & Culture','Nature & Escape','Off the Map','Farm & Countryside'], timing:['Winter Escape','Fall',"I'm Flexible"] },
     { flag:'🇻🇳', name:'Da Nang, Vietnam', why:'Miles of uncrowded beach, marble mountains, incredible seafood. Vietnam\'s best family-friendly coast.', flightCostPerPerson:550, nightlyHotelRate:35, dailyExpensesPerPerson:25, tags:['Beach & Sun','Family-First','Off the Map'], timing:['Spring Break','Summer',"I'm Flexible"] },
-    { flag:'🇻🇳', name:'Hoi An, Vietnam', why:'Lantern-lit ancient town, tailor shops on every corner, $1 banh mi, and rice paddies a bike ride away. Impossibly charming.', flightCostPerPerson:550, nightlyHotelRate:35, dailyExpensesPerPerson:20, tags:['Small Town Charm','City & Culture','Off the Map'], timing:['Spring Break','Fall','Winter Escape',"I'm Flexible"] },
+    { flag:'🇻🇳', name:'Hoi An, Vietnam', why:'Lantern-lit ancient town, tailor shops on every corner, $1 banh mi, and rice paddies a bike ride away. Impossibly charming.', flightCostPerPerson:550, nightlyHotelRate:35, dailyExpensesPerPerson:20, tags:['Small Town Charm','City & Culture','Off the Map'], timing:['Spring Break','Fall','Winter Escape',"I'm Flexible"], unesco:true, unescoSite:'Hoi An Ancient Town', unescoYear:1999 },
     { flag:'🇮🇳', name:'Goa, India', why:'Palm-fringed beaches, Portuguese-Indian fusion food, beach shacks at sunset. India\'s chill side.', flightCostPerPerson:650, nightlyHotelRate:30, dailyExpensesPerPerson:20, tags:['Beach & Sun','Off the Map'], timing:['Winter Escape','Fall',"I'm Flexible"] },
     { flag:'🇧🇴', name:'La Paz, Bolivia', why:'World\'s highest capital, salt flats that mirror the sky, Death Road mountain biking. Truly otherworldly.', flightCostPerPerson:450, nightlyHotelRate:35, dailyExpensesPerPerson:25, tags:['Nature & Escape','Off the Map'], timing:['Summer','Fall',"I'm Flexible"], nearestParks:['Salar de Uyuni'] },
     { flag:'🇲🇽', name:'Mexico City, Mexico', why:'World-class museums, $3 taco crawls, Aztec ruins downtown. One of the great cities, at a fraction of the price.', flightCostPerPerson:250, nightlyHotelRate:60, dailyExpensesPerPerson:35, tags:['City & Culture','Family-First'], timing:['Spring Break','Fall','Winter Escape',"I'm Flexible"], minNights:2, maxNights:10 },
     { flag:'🇪🇬', name:'Cairo, Egypt', why:'The Pyramids. The Sphinx. The Egyptian Museum. Five thousand years of history and some of the best food in the Middle East.', flightCostPerPerson:550, nightlyHotelRate:40, dailyExpensesPerPerson:25, tags:['City & Culture','Off the Map'], timing:['Fall','Winter Escape','Spring Break',"I'm Flexible"] },
-    { flag:'🇱🇦', name:'Luang Prabang, Laos', why:'Monks at dawn, waterfalls in the jungle, French-Lao fusion cuisine on the Mekong. Pure magic.', flightCostPerPerson:600, nightlyHotelRate:30, dailyExpensesPerPerson:15, tags:['Nature & Escape','Off the Map','Small Town Charm'], timing:['Winter Escape','Fall',"I'm Flexible"] },
+    { flag:'🇱🇦', name:'Luang Prabang, Laos', why:'Monks at dawn, waterfalls in the jungle, French-Lao fusion cuisine on the Mekong. Pure magic.', flightCostPerPerson:600, nightlyHotelRate:30, dailyExpensesPerPerson:15, tags:['Nature & Escape','Off the Map','Small Town Charm'], timing:['Winter Escape','Fall',"I'm Flexible"], unesco:true, unescoSite:'Town of Luang Prabang', unescoYear:1995 },
     { flag:'🇮🇳', name:'Kerala, India', why:'Houseboat through the backwaters, Ayurvedic spa villages, spice plantations in the hills. India\'s most peaceful state.', flightCostPerPerson:650, nightlyHotelRate:35, dailyExpensesPerPerson:20, tags:['Nature & Escape','Off the Map','Farm & Countryside'], timing:['Winter Escape','Fall',"I'm Flexible"] },
-    { flag:'🇲🇽', name:'Oaxaca, Mexico', why:'Mezcal tastings, Zapotec ruins, mole with 30 ingredients. Mexico\'s cultural soul at backpacker prices.', flightCostPerPerson:300, nightlyHotelRate:50, dailyExpensesPerPerson:35, tags:['City & Culture','Off the Map','Farm & Countryside'], timing:['Fall','Winter Escape','Spring Break',"I'm Flexible"] },
+    { flag:'🇲🇽', name:'Oaxaca, Mexico', why:'Mezcal tastings, Zapotec ruins, mole with 30 ingredients. Mexico\'s cultural soul at backpacker prices.', flightCostPerPerson:300, nightlyHotelRate:50, dailyExpensesPerPerson:35, tags:['City & Culture','Off the Map','Farm & Countryside'], timing:['Fall','Winter Escape','Spring Break',"I'm Flexible"], unesco:true, unescoSite:'Historic Centre of Oaxaca and Monte Albán', unescoYear:1987 },
     { flag:'🇷🇴', name:'Bucharest, Romania', why:'Art Deco palaces, the world\'s heaviest building, craft beer scene, and Transylvanian castles two hours away.', flightCostPerPerson:450, nightlyHotelRate:50, dailyExpensesPerPerson:30, tags:['City & Culture','Off the Map'], timing:['Summer','Fall',"I'm Flexible"] },
     { flag:'🇮🇳', name:'Rajasthan, India', why:'Tiger safaris, desert forts, palaces turned into hotels. A riot of color and history at unbeatable prices.', flightCostPerPerson:650, nightlyHotelRate:40, dailyExpensesPerPerson:25, tags:['City & Culture','Nature & Escape','Off the Map','Farm & Countryside'], timing:['Winter Escape','Fall',"I'm Flexible"] },
     { flag:'🇵🇭', name:'El Nido, Philippines', why:'Limestone cliffs, hidden lagoons, island-hopping by outrigger canoe. Southeast Asia\'s most photogenic coast.', flightCostPerPerson:600, nightlyHotelRate:40, dailyExpensesPerPerson:20, tags:['Beach & Sun','Nature & Escape','Off the Map','Small Town Charm'], timing:['Winter Escape','Spring Break',"I'm Flexible"] },
@@ -820,7 +853,7 @@ app.post('/api/search', async (req, res) => {
     { flag:'🇩🇴', name:'Las Terrenas, Dominican Republic', why:'A French-Caribbean beach town most Americans have never heard of. Walkable, affordable, beautiful.', flightCostPerPerson:350, nightlyHotelRate:60, dailyExpensesPerPerson:35, tags:['Beach & Sun','City & Culture','Family-First','Small Town Charm'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"], lodgingTypes:['villa','boutique-hotel','eco-lodge'], minNights:2, maxNights:10 },
     { flag:'🇭🇺', name:'Budapest, Hungary', why:'Thermal baths, ruin bars, Danube sunsets, and pastries that rival Vienna at half the price.', flightCostPerPerson:450, nightlyHotelRate:65, dailyExpensesPerPerson:40, tags:['City & Culture'], timing:['Spring Break','Summer','Fall','White Christmas',"I'm Flexible"], snowProbability:true },
     { flag:'🇱🇰', name:'Galle, Sri Lanka', why:'Dutch colonial fort on a tropical headland, whale watching, tea country trains. Incredible value.', flightCostPerPerson:650, nightlyHotelRate:40, dailyExpensesPerPerson:25, tags:['Beach & Sun','City & Culture','Off the Map','Small Town Charm'], timing:['Winter Escape','Spring Break',"I'm Flexible"] },
-    { flag:'🇨🇴', name:'Cartagena, Colombia', why:'Colonial walled city, Caribbean beaches 20 min away, world-class food, dollar goes three times as far.', flightCostPerPerson:350, nightlyHotelRate:70, dailyExpensesPerPerson:40, tags:['Beach & Sun','City & Culture','Off the Map'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"], lodgingTypes:['colonial-mansion','boutique-hotel','hostel'], nearestParks:['Tayrona National Park'] },
+    { flag:'🇨🇴', name:'Cartagena, Colombia', why:'Colonial walled city, Caribbean beaches 20 min away, world-class food, dollar goes three times as far.', flightCostPerPerson:350, nightlyHotelRate:70, dailyExpensesPerPerson:40, tags:['Beach & Sun','City & Culture','Off the Map'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"], lodgingTypes:['colonial-mansion','boutique-hotel','hostel'], nearestParks:['Tayrona National Park'], unesco:true, unescoSite:'Port, Fortresses and Group of Monuments, Cartagena', unescoYear:1984 },
     { flag:'🇲🇦', name:'Chefchaouen, Morocco', why:'The Blue City. Every wall painted indigo, tucked in the Rif Mountains, with no crowds and mint tea on every rooftop.', flightCostPerPerson:500, nightlyHotelRate:50, dailyExpensesPerPerson:30, tags:['Small Town Charm','Off the Map','City & Culture'], timing:['Spring Break','Fall',"I'm Flexible"] },
     { flag:'🇮🇳', name:'Mumbai, India', why:'Bollywood energy, colonial architecture, legendary street food from vada pav to pav bhaji. India\'s maximalist, magnificent heart.', flightCostPerPerson:650, nightlyHotelRate:50, dailyExpensesPerPerson:30, tags:['City & Culture','Off the Map'], timing:['Winter Escape','Fall','Spring Break',"I'm Flexible"] },
     { flag:'🇮🇩', name:'Bali, Indonesia', why:'Rice terraces, temple ceremonies, surf breaks, and $8 massages. Spiritual and hedonistic in equal measure.', flightCostPerPerson:600, nightlyHotelRate:50, dailyExpensesPerPerson:30, tags:['Beach & Sun','Nature & Escape','Off the Map','Farm & Countryside'], timing:['Summer','Fall',"I'm Flexible"], nearestParks:['Kawah Ijen Volcano'] },
@@ -833,24 +866,24 @@ app.post('/api/search', async (req, res) => {
     { flag:'🇲🇦', name:'Essaouira, Morocco', why:'Wind-swept Atlantic ramparts, blue fishing boats, Hendrix history, and no cruise ship crowds. Marrakech\'s cooler cousin.', flightCostPerPerson:500, nightlyHotelRate:55, dailyExpensesPerPerson:35, tags:['Beach & Sun','City & Culture','Off the Map','Small Town Charm'], timing:['Spring Break','Fall',"I'm Flexible"], lodgingTypes:['riad','kasbah','boutique-hotel'] },
     { flag:'🇭🇳', name:'Roatán, Honduras', why:'Caribbean reef diving for a fraction of Belize prices, uncrowded white sand, West End village nightlife.', flightCostPerPerson:400, nightlyHotelRate:70, dailyExpensesPerPerson:35, tags:['Beach & Sun','Nature & Escape','Off the Map','Small Town Charm'], timing:['Spring Break','Winter Escape',"I'm Flexible"] },
     { flag:'🇲🇹', name:'Valletta, Malta', why:'Honey-colored fortress city smaller than most neighborhoods. Knights Templar history, blue grottoes, and great diving.', flightCostPerPerson:500, nightlyHotelRate:65, dailyExpensesPerPerson:40, tags:['City & Culture','Beach & Sun','Small Town Charm'], timing:['Spring Break','Summer','Fall',"I'm Flexible"] },
-    { flag:'🇲🇦', name:'Marrakech, Morocco', why:'The medina is unlike anywhere on earth. Spice markets, rooftop dinners, Atlas Mountains nearby.', flightCostPerPerson:500, nightlyHotelRate:65, dailyExpensesPerPerson:40, tags:['City & Culture','Off the Map'], timing:['Fall','Winter Escape','Spring Break',"I'm Flexible"], lodgingTypes:['riad','kasbah','boutique-hotel'] },
-    { flag:'🇵🇷', name:'Rincón, Puerto Rico', why:'No passport needed, direct flights from most US cities, surf town with great family beaches.', flightCostPerPerson:300, nightlyHotelRate:80, dailyExpensesPerPerson:45, tags:['Beach & Sun','Family-First','Small Town Charm'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"], nearestParks:['El Yunque National Forest'], minNights:3, maxNights:10 },
-    { flag:'🇹🇷', name:'Cappadocia, Turkey', why:'Hot air balloons over fairy chimneys at dawn, cave hotels, underground cities. Genuinely surreal.', flightCostPerPerson:550, nightlyHotelRate:65, dailyExpensesPerPerson:35, tags:['Nature & Escape','Off the Map','Farm & Countryside'], timing:['Spring Break','Fall',"I'm Flexible"] },
+    { flag:'🇲🇦', name:'Marrakech, Morocco', why:'The medina is unlike anywhere on earth. Spice markets, rooftop dinners, Atlas Mountains nearby.', flightCostPerPerson:500, nightlyHotelRate:65, dailyExpensesPerPerson:40, tags:['City & Culture','Off the Map'], timing:['Fall','Winter Escape','Spring Break',"I'm Flexible"], lodgingTypes:['riad','kasbah','boutique-hotel'], unesco:true, unescoSite:'Medina of Marrakesh', unescoYear:1985 },
+    { flag:'🇵🇷', name:'Rincón, Puerto Rico', why:'No passport needed, direct flights from most US cities, surf town with great family beaches.', flightCostPerPerson:300, nightlyHotelRate:80, dailyExpensesPerPerson:45, tags:['Beach & Sun','Family-First','Small Town Charm'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"], nearestParks:['El Yunque National Forest'], minNights:3, maxNights:10, unesco:true, unescoSite:'La Fortaleza and San Juan National Historic Site', unescoYear:1983 },
+    { flag:'🇹🇷', name:'Cappadocia, Turkey', why:'Hot air balloons over fairy chimneys at dawn, cave hotels, underground cities. Genuinely surreal.', flightCostPerPerson:550, nightlyHotelRate:65, dailyExpensesPerPerson:35, tags:['Nature & Escape','Off the Map','Farm & Countryside'], timing:['Spring Break','Fall',"I'm Flexible"], unesco:true, unescoSite:'Göreme National Park and Rock Sites of Cappadocia', unescoYear:1985 },
     { flag:'🇲🇪', name:'Kotor, Montenegro', why:'Fjord-like bay, Venetian old town, hiking fortress walls at sunset. Croatia quality, half the price.', flightCostPerPerson:500, nightlyHotelRate:65, dailyExpensesPerPerson:40, tags:['City & Culture','Nature & Escape','Off the Map','Small Town Charm'], timing:['Spring Break','Summer',"I'm Flexible"] },
     { flag:'🇧🇿', name:'San Ignacio, Belize', why:'Maya ruins in the jungle, cave tubing, howler monkeys. The adventure side of Belize most people miss.', flightCostPerPerson:400, nightlyHotelRate:65, dailyExpensesPerPerson:40, tags:['Nature & Escape','Off the Map','Family-First','Small Town Charm'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"] },
 
     // ── MID-RANGE ──
-    { flag:'🇵🇪', name:'Cusco, Peru', why:'Gateway to Machu Picchu, Inca stonework, altitude-defying nightlife, and Sacred Valley day trips.', flightCostPerPerson:500, nightlyHotelRate:70, dailyExpensesPerPerson:40, tags:['City & Culture','Nature & Escape','Off the Map'], timing:['Summer','Fall','Spring Break',"I'm Flexible"] },
-    { flag:'🇨🇦', name:'Québec City, Canada', why:'A European walled city in North America. Magical in snow. No passport needed.', flightCostPerPerson:300, nightlyHotelRate:100, dailyExpensesPerPerson:55, tags:['City & Culture','White Christmas','Family-First','Small Town Charm'], timing:['White Christmas','Winter Escape',"I'm Flexible"], snowProbability:true },
+    { flag:'🇵🇪', name:'Cusco, Peru', why:'Gateway to Machu Picchu, Inca stonework, altitude-defying nightlife, and Sacred Valley day trips.', flightCostPerPerson:500, nightlyHotelRate:70, dailyExpensesPerPerson:40, tags:['City & Culture','Nature & Escape','Off the Map'], timing:['Summer','Fall','Spring Break',"I'm Flexible"], unesco:true, unescoSite:'Historic Sanctuary of Machu Picchu', unescoYear:1983 },
+    { flag:'🇨🇦', name:'Québec City, Canada', why:'A European walled city in North America. Magical in snow. No passport needed.', flightCostPerPerson:300, nightlyHotelRate:100, dailyExpensesPerPerson:55, tags:['City & Culture','White Christmas','Family-First','Small Town Charm'], timing:['White Christmas','Winter Escape',"I'm Flexible"], snowProbability:true, unesco:true, unescoSite:'Historic District of Old Québec', unescoYear:1985 },
     { flag:'🇨🇷', name:'Monteverde, Costa Rica', why:'Cloud forest canopy walks, zip lines, hummingbirds everywhere. Family adventure without the fuss.', flightCostPerPerson:350, nightlyHotelRate:85, dailyExpensesPerPerson:45, tags:['Nature & Escape','Family-First','Farm & Countryside'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"] },
     { flag:'🇯🇲', name:'Negril, Jamaica', why:'Seven Mile Beach, genuine reggae culture, strong villa market for families. More affordable than the resort side.', flightCostPerPerson:350, nightlyHotelRate:90, dailyExpensesPerPerson:50, tags:['Beach & Sun','Family-First','Small Town Charm'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"], lodgingTypes:['great-house','eco-lodge','villa'], minNights:2, maxNights:10 },
     { flag:'🇹🇿', name:'Zanzibar, Tanzania', why:'Spice island with turquoise water, Stone Town history, and dhow sailing at sunset. Africa meets Arabia.', flightCostPerPerson:700, nightlyHotelRate:60, dailyExpensesPerPerson:35, tags:['Beach & Sun','City & Culture','Off the Map','Small Town Charm'], timing:['Summer','Winter Escape',"I'm Flexible"] },
     { flag:'🇬🇷', name:'Thessaloniki, Greece', why:'Greece\'s real food capital, Byzantine walls, waterfront bars, and half the tourists of Athens.', flightCostPerPerson:550, nightlyHotelRate:75, dailyExpensesPerPerson:45, tags:['City & Culture','Beach & Sun'], timing:['Spring Break','Summer','Fall',"I'm Flexible"] },
-    { flag:'🇯🇴', name:'Petra, Jordan', why:'Rose-red city carved into cliffs, Wadi Rum desert camps, Dead Sea floats. Lawrence of Arabia, for real.', flightCostPerPerson:600, nightlyHotelRate:85, dailyExpensesPerPerson:50, tags:['City & Culture','Nature & Escape','Off the Map'], timing:['Spring Break','Fall',"I'm Flexible"] },
-    { flag:'🇵🇹', name:'Porto, Portugal', why:'Arguably the most beautiful city in Europe. Cheaper than Lisbon, better food, world-famous wine.', flightCostPerPerson:500, nightlyHotelRate:90, dailyExpensesPerPerson:50, tags:['City & Culture','Nature & Escape','Farm & Countryside'], timing:['Spring Break','Summer','Fall',"I'm Flexible"], lodgingTypes:['quinta','boutique-hotel','guesthouse'] },
-    { flag:'🇪🇸', name:'Seville, Spain', why:'Flamenco courtyards, Moorish palaces, tapas crawls, and the best orange trees you\'ll ever walk under.', flightCostPerPerson:500, nightlyHotelRate:95, dailyExpensesPerPerson:55, tags:['City & Culture'], timing:['Spring Break','Fall',"I'm Flexible"], lodgingTypes:['cave-hotel','parador','boutique-hotel'] },
+    { flag:'🇯🇴', name:'Petra, Jordan', why:'Rose-red city carved into cliffs, Wadi Rum desert camps, Dead Sea floats. Lawrence of Arabia, for real.', flightCostPerPerson:600, nightlyHotelRate:85, dailyExpensesPerPerson:50, tags:['City & Culture','Nature & Escape','Off the Map'], timing:['Spring Break','Fall',"I'm Flexible"], unesco:true, unescoSite:'Petra', unescoYear:1985 },
+    { flag:'🇵🇹', name:'Porto, Portugal', why:'Arguably the most beautiful city in Europe. Cheaper than Lisbon, better food, world-famous wine.', flightCostPerPerson:500, nightlyHotelRate:90, dailyExpensesPerPerson:50, tags:['City & Culture','Nature & Escape','Farm & Countryside'], timing:['Spring Break','Summer','Fall',"I'm Flexible"], lodgingTypes:['quinta','boutique-hotel','guesthouse'], unesco:true, unescoSite:'Cultural Landscape of Sintra', unescoYear:1995 },
+    { flag:'🇪🇸', name:'Seville, Spain', why:'Flamenco courtyards, Moorish palaces, tapas crawls, and the best orange trees you\'ll ever walk under.', flightCostPerPerson:500, nightlyHotelRate:95, dailyExpensesPerPerson:55, tags:['City & Culture'], timing:['Spring Break','Fall',"I'm Flexible"], lodgingTypes:['cave-hotel','parador','boutique-hotel'], unesco:true, unescoSite:'Cathedral, Alcázar and Archivo de Indias in Seville', unescoYear:1987 },
     { flag:'🇪🇸', name:'Valencia, Spain', why:'Las Fallas fireworks, City of Arts and Sciences, paella on the beach where paella was invented.', flightCostPerPerson:500, nightlyHotelRate:90, dailyExpensesPerPerson:50, tags:['City & Culture','Beach & Sun','Family-First'], timing:['Spring Break','Summer','Fall',"I'm Flexible"] },
-    { flag:'🇧🇪', name:'Bruges, Belgium', why:'Medieval canals, chocolate shops on every corner, horse-drawn carriages, and the best beer on earth. A living fairy tale.', flightCostPerPerson:450, nightlyHotelRate:110, dailyExpensesPerPerson:55, tags:['City & Culture','Small Town Charm'], timing:['Spring Break','Fall','White Christmas',"I'm Flexible"] },
+    { flag:'🇧🇪', name:'Bruges, Belgium', why:'Medieval canals, chocolate shops on every corner, horse-drawn carriages, and the best beer on earth. A living fairy tale.', flightCostPerPerson:450, nightlyHotelRate:110, dailyExpensesPerPerson:55, tags:['City & Culture','Small Town Charm'], timing:['Spring Break','Fall','White Christmas',"I'm Flexible"], snowProbability:true, unesco:true, unescoSite:'Historic Centre of Brugge', unescoYear:2000 },
     { flag:'🇦🇷', name:'Buenos Aires, Argentina', why:'Tango in San Telmo, world-class steak for $20, bookshops in old theaters. Paris of South America, Argentine prices.', flightCostPerPerson:600, nightlyHotelRate:85, dailyExpensesPerPerson:50, tags:['City & Culture'], timing:['Spring Break','Fall',"I'm Flexible"] },
     { flag:'🇭🇷', name:'Hvar, Croatia', why:'Mediterranean sunshine, clear Adriatic water, ancient stone towns. Still affordable before peak summer.', flightCostPerPerson:550, nightlyHotelRate:100, dailyExpensesPerPerson:55, tags:['Beach & Sun','City & Culture','Small Town Charm'], timing:['Spring Break','Summer',"I'm Flexible"], nearestParks:['Plitvice Lakes National Park'] },
 
@@ -860,8 +893,8 @@ app.post('/api/search', async (req, res) => {
     { flag:'🇪🇸', name:'San Sebastián, Spain', why:'More Michelin stars per capita than Paris. Pintxos bars, surf beach, Basque culture. Worth the splurge.', flightCostPerPerson:500, nightlyHotelRate:130, dailyExpensesPerPerson:70, tags:['City & Culture','Beach & Sun'], timing:['Summer','Fall',"I'm Flexible"] },
     { flag:'🇫🇷', name:'Colmar, France', why:'Half-timbered houses along canals, Alsatian wine route, Christmas markets that define the genre. A storybook town.', flightCostPerPerson:500, nightlyHotelRate:120, dailyExpensesPerPerson:60, tags:['Small Town Charm','White Christmas','Farm & Countryside'], timing:['Fall','White Christmas',"I'm Flexible"], snowProbability:true },
     { flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', name:'Edinburgh, Scotland', why:'Castle on a volcanic rock, whisky trails, literary pubs, and the Highlands a short drive away.', flightCostPerPerson:500, nightlyHotelRate:140, dailyExpensesPerPerson:65, tags:['City & Culture','Nature & Escape','Family-First'], timing:['Summer','Fall','White Christmas',"I'm Flexible"], snowProbability:true },
-    { flag:'🇭🇷', name:'Dubrovnik, Croatia', why:'Walled city above the Adriatic, Game of Thrones filming, island-hopping by ferry. Peak Mediterranean.', flightCostPerPerson:550, nightlyHotelRate:140, dailyExpensesPerPerson:65, tags:['Beach & Sun','City & Culture','Small Town Charm'], timing:['Spring Break','Summer',"I'm Flexible"], nearestParks:['Plitvice Lakes National Park'] },
-    { flag:'🇮🇸', name:'Reykjavik, Iceland', why:'Northern lights, geothermal pools, waterfalls everywhere. Jaw-dropping in winter. Short flight from the East Coast.', flightCostPerPerson:400, nightlyHotelRate:170, dailyExpensesPerPerson:80, tags:['Nature & Escape','Off the Map'], timing:['Winter Escape','White Christmas',"I'm Flexible"], snowProbability:true, lodgingTypes:['ice-hotel-nearby','guesthouse','boutique-hotel'], nearestParks:['Þingvellir National Park','Vatnajökull National Park'], minNights:5, maxNights:14 },
+    { flag:'🇭🇷', name:'Dubrovnik, Croatia', why:'Walled city above the Adriatic, Game of Thrones filming, island-hopping by ferry. Peak Mediterranean.', flightCostPerPerson:550, nightlyHotelRate:140, dailyExpensesPerPerson:65, tags:['Beach & Sun','City & Culture','Small Town Charm'], timing:['Spring Break','Summer',"I'm Flexible"], nearestParks:['Plitvice Lakes National Park'], unesco:true, unescoSite:'Old City of Dubrovnik', unescoYear:1979 },
+    { flag:'🇮🇸', name:'Reykjavik, Iceland', why:'Northern lights, geothermal pools, waterfalls everywhere. Jaw-dropping in winter. Short flight from the East Coast.', flightCostPerPerson:400, nightlyHotelRate:170, dailyExpensesPerPerson:80, tags:['Nature & Escape','Off the Map'], timing:['Winter Escape','White Christmas',"I'm Flexible"], snowProbability:true, lodgingTypes:['ice-hotel-nearby','guesthouse','boutique-hotel'], nearestParks:['Þingvellir National Park','Vatnajökull National Park'], minNights:5, maxNights:14, unesco:true, unescoSite:'Þingvellir National Park', unescoYear:2004 },
     { flag:'🇧🇷', name:'Rio de Janeiro, Brazil', why:'Carnival, Sugarloaf, Copacabana, samba until sunrise. The world\'s greatest party city with nature to match.', flightCostPerPerson:650, nightlyHotelRate:105, dailyExpensesPerPerson:60, tags:['Beach & Sun','City & Culture'], timing:['Spring Break','Summer','Winter Escape',"I'm Flexible"] },
     { flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', name:'Cotswolds, England', why:'Honey-stone villages, rolling green hills, cozy pubs with fireplaces, and sheep around every bend. Peak English countryside.', flightCostPerPerson:500, nightlyHotelRate:150, dailyExpensesPerPerson:60, tags:['Small Town Charm','Farm & Countryside','Nature & Escape'], timing:['Spring Break','Summer','Fall',"I'm Flexible"] },
     { flag:'🇿🇦', name:'Cape Town, South Africa', why:'Table Mountain, penguin colonies, winelands, and two oceans. One of the world\'s great cities, surprisingly affordable.', flightCostPerPerson:800, nightlyHotelRate:120, dailyExpensesPerPerson:55, tags:['City & Culture','Nature & Escape','Beach & Sun','Farm & Countryside'], timing:['Spring Break','Fall',"I'm Flexible"], nearestParks:['Namib-Naukluft National Park'] },
@@ -875,15 +908,27 @@ app.post('/api/search', async (req, res) => {
 
     // ── PREMIUM ──
     { flag:'🇬🇷', name:'Santorini, Greece', why:'Whitewashed cliffs over a volcanic caldera, legendary sunsets, wine from vines older than most countries.', flightCostPerPerson:600, nightlyHotelRate:230, dailyExpensesPerPerson:85, tags:['Beach & Sun','City & Culture','Small Town Charm'], timing:['Spring Break','Summer',"I'm Flexible"] },
-    { flag:'🇯🇵', name:'Kyoto, Japan', why:'Bamboo groves, thousand-gate shrines, geisha district, kaiseki dinners. Japan\'s spiritual heart.', flightCostPerPerson:800, nightlyHotelRate:190, dailyExpensesPerPerson:80, tags:['City & Culture','Nature & Escape'], timing:['Spring Break','Fall',"I'm Flexible"], lodgingTypes:['ryokan','machiya-townhouse','capsule-hotel'], nearestParks:['Shiretoko National Park','Daisetsuzan National Park'], minNights:6, maxNights:21 },
+    { flag:'🇯🇵', name:'Kyoto, Japan', why:'Bamboo groves, thousand-gate shrines, geisha district, kaiseki dinners. Japan\'s spiritual heart.', flightCostPerPerson:800, nightlyHotelRate:190, dailyExpensesPerPerson:80, tags:['City & Culture','Nature & Escape'], timing:['Spring Break','Fall',"I'm Flexible"], lodgingTypes:['ryokan','machiya-townhouse','capsule-hotel'], nearestParks:['Shiretoko National Park','Daisetsuzan National Park'], minNights:6, maxNights:21, unesco:true, unescoSite:'Historic Monuments of Ancient Kyoto', unescoYear:1994 },
     { flag:'🇫🇷', name:'French Riviera, France', why:'Azure coast, hilltop villages, Matisse museums, rosé on the beach. Glamorous but the back roads are affordable.', flightCostPerPerson:550, nightlyHotelRate:230, dailyExpensesPerPerson:90, tags:['Beach & Sun','City & Culture'], timing:['Summer','Spring Break',"I'm Flexible"] },
     { flag:'🇯🇵', name:'Tokyo, Japan', why:'Neon-lit streets, Michelin-star ramen for $10, ancient temples minutes from Shibuya Crossing.', flightCostPerPerson:850, nightlyHotelRate:210, dailyExpensesPerPerson:100, tags:['City & Culture','Off the Map'], timing:['Spring Break','Fall','White Christmas',"I'm Flexible"], lodgingTypes:['ryokan','machiya-townhouse','capsule-hotel'], minNights:6, maxNights:21 },
-    { flag:'🇮🇹', name:'Amalfi Coast, Italy', why:'Cliffside villages, limoncello with a view, and the best pasta you will ever eat. Worth every cent.', flightCostPerPerson:600, nightlyHotelRate:300, dailyExpensesPerPerson:100, tags:['Beach & Sun','City & Culture','Small Town Charm'], timing:['Spring Break','Summer',"I'm Flexible"] },
+    { flag:'🇮🇹', name:'Amalfi Coast, Italy', why:'Cliffside villages, limoncello with a view, and the best pasta you will ever eat. Worth every cent.', flightCostPerPerson:600, nightlyHotelRate:300, dailyExpensesPerPerson:100, tags:['Beach & Sun','City & Culture','Small Town Charm'], timing:['Spring Break','Summer',"I'm Flexible"], unesco:true, unescoSite:'Costiera Amalfitana', unescoYear:1997 },
     { flag:'🇦🇷', name:'Patagonia, Argentina', why:'End-of-the-world glaciers, epic hiking, estancia stays. Remote, dramatic, unforgettable.', flightCostPerPerson:900, nightlyHotelRate:230, dailyExpensesPerPerson:90, tags:['Nature & Escape','Off the Map','Farm & Countryside'], timing:['Fall','Winter Escape',"I'm Flexible"], nearestParks:['Parque Nacional Los Glaciares','Torres del Paine National Park'], minNights:7, maxNights:21 },
     { flag:'🇫🇮', name:'Lapland, Finland', why:'Northern lights from a glass igloo, reindeer safaris, Santa Claus Village. Winter wonderland turned real.', flightCostPerPerson:600, nightlyHotelRate:300, dailyExpensesPerPerson:95, tags:['Nature & Escape','White Christmas','Family-First'], timing:['White Christmas','Winter Escape',"I'm Flexible"], snowProbability:true, lodgingTypes:['glass-igloo','log-cabin','arctic-resort'], minNights:6, maxNights:14 },
     { flag:'🇨🇭', name:'Swiss Alps, Switzerland', why:'Staggering mountain scenery, world-class skiing, chocolate and fondue in a chalet. A splurge that delivers.', flightCostPerPerson:600, nightlyHotelRate:340, dailyExpensesPerPerson:130, tags:['Nature & Escape','White Christmas','Small Town Charm'], timing:['Winter Escape','White Christmas','Summer',"I'm Flexible"], snowProbability:true },
     { flag:'🇳🇿', name:'Queenstown, New Zealand', why:'Bungee jumping, fjord cruises, Lord of the Rings landscapes, and the world\'s best adventure town.', flightCostPerPerson:1100, nightlyHotelRate:260, dailyExpensesPerPerson:90, tags:['Nature & Escape','Family-First'], timing:['Summer','Fall',"I'm Flexible"], nearestParks:['Milford Sound / Fiordland','Mount Aspiring NP'], minNights:8, maxNights:21 },
     { flag:'🇪🇨', name:'Galápagos, Ecuador', why:'Swim with sea lions, walk among giant tortoises, see blue-footed boobies. Evolution\'s living laboratory.', flightCostPerPerson:700, nightlyHotelRate:380, dailyExpensesPerPerson:100, tags:['Nature & Escape','Off the Map'], timing:['Summer','Fall',"I'm Flexible"], nearestParks:['Parque Nacional Galápagos'], minNights:5, maxNights:14 },
+
+    // ── UNESCO TIER 2 ──
+    { flag:'🇲🇽', name:'Chichén Itzá, Mexico', why:'The most visited Maya ruin and one of the New Seven Wonders. Pair with Mérida for the best food in Mexico.', flightCostPerPerson:350, nightlyHotelRate:100, dailyExpensesPerPerson:40, tags:['City & Culture','Off the Map','Nature & Escape'], timing:['Spring Break','Fall','Winter Escape',"I'm Flexible"], minNights:5, maxNights:10, unesco:true, unescoSite:'Pre-Hispanic City of Chichen-Itza', unescoYear:1988 },
+    { flag:'🇦🇷', name:'Iguazú Falls, Argentina', why:'275 waterfalls in a 2km arc. Eleanor Roosevelt said "Poor Niagara." Do both the Argentina and Brazil sides.', flightCostPerPerson:700, nightlyHotelRate:130, dailyExpensesPerPerson:50, tags:['Nature & Escape','Off the Map'], timing:['Spring Break','Fall','Summer',"I'm Flexible"], minNights:3, maxNights:5, unesco:true, unescoSite:'Iguazu National Park', unescoYear:1984 },
+    { flag:'🇪🇸', name:'Granada, Spain', why:'The Alhambra is arguably the most beautiful building on Earth. Tapas are free with every drink. Snow on the Sierra Nevada behind it.', flightCostPerPerson:650, nightlyHotelRate:110, dailyExpensesPerPerson:50, tags:['City & Culture','Off the Map'], timing:['Spring Break','Fall',"I'm Flexible"], minNights:4, maxNights:7, unesco:true, unescoSite:'Alhambra, Generalife and Albayzín, Granada', unescoYear:1984 },
+    { flag:'🇨🇿', name:'Prague, Czech Republic', why:'One of Europe\'s most architecturally dense cities. Christmas market on Old Town Square, $2 beer, the Charles Bridge at dawn.', flightCostPerPerson:600, nightlyHotelRate:100, dailyExpensesPerPerson:50, tags:['City & Culture','White Christmas'], timing:['Spring Break','Fall','White Christmas',"I'm Flexible"], snowProbability:true, minNights:4, maxNights:7, unesco:true, unescoSite:'Historic Centre of Prague', unescoYear:1992 },
+    { flag:'🇲🇦', name:'Fez, Morocco', why:'The world\'s largest living medieval city — 9,000 alleys, no cars, the Chouara tanneries, the oldest university on earth.', flightCostPerPerson:550, nightlyHotelRate:80, dailyExpensesPerPerson:35, tags:['City & Culture','Off the Map'], timing:['Spring Break','Fall',"I'm Flexible"], lodgingTypes:['riad','kasbah','boutique-hotel'], minNights:3, maxNights:6, unesco:true, unescoSite:'Medina of Fez', unescoYear:1981 },
+    { flag:'🇿🇲', name:'Victoria Falls, Zambia', why:'The largest curtain of falling water on Earth — 1.7km wide. Combine with a Botswana Chobe safari.', flightCostPerPerson:1200, nightlyHotelRate:150, dailyExpensesPerPerson:80, tags:['Nature & Escape','Off the Map'], timing:['Summer','Fall',"I'm Flexible"], minNights:4, maxNights:8, unesco:true, unescoSite:'Mosi-oa-Tunya / Victoria Falls', unescoYear:1989 },
+    { flag:'🇲🇲', name:'Bagan, Myanmar', why:'3,500 Buddhist temples on a plain, visible from hot air balloons at sunrise. One of the most otherworldly landscapes in Asia.', flightCostPerPerson:1000, nightlyHotelRate:80, dailyExpensesPerPerson:30, tags:['Nature & Escape','Off the Map'], timing:['Winter Escape','Fall',"I'm Flexible"], minNights:3, maxNights:5, unesco:true, unescoSite:'Ancient City of Bagan', unescoYear:2019 },
+    { flag:'🇻🇳', name:'Ha Long Bay, Vietnam', why:'1,600 limestone islands emerging from emerald water. Overnight on a junk boat through caves and floating villages.', flightCostPerPerson:600, nightlyHotelRate:90, dailyExpensesPerPerson:35, tags:['Nature & Escape','Off the Map','Beach & Sun'], timing:['Spring Break','Fall','Winter Escape',"I'm Flexible"], minNights:5, maxNights:10, unesco:true, unescoSite:'Ha Long Bay', unescoYear:1994 },
+    { flag:'🇹🇿', name:'Serengeti, Tanzania', why:'The Great Migration — 1.5 million wildebeest. The most spectacular wildlife event on Earth. Combine with Ngorongoro Crater and Zanzibar.', flightCostPerPerson:1100, nightlyHotelRate:300, dailyExpensesPerPerson:100, tags:['Nature & Escape','Off the Map'], timing:['Summer','Fall',"I'm Flexible"], minNights:7, maxNights:14, unesco:true, unescoSite:'Serengeti National Park', unescoYear:1981 },
+    { flag:'🇦🇺', name:'Uluru, Australia', why:'The most sacred site of the Anangu people. Uluru at sunrise changes from ochre to deep red to violet. Field of Light art installation nearby.', flightCostPerPerson:1300, nightlyHotelRate:200, dailyExpensesPerPerson:80, tags:['Nature & Escape','Off the Map'], timing:['Spring Break','Fall',"I'm Flexible"], minNights:3, maxNights:5, unesco:true, unescoSite:'Uluru-Kata Tjuta National Park', unescoYear:1987 },
 
     // ── LUXURY ──
     { flag:'🇲🇻', name:'Maldives', why:'Overwater villas, bioluminescent beaches, reef snorkeling from your room. The ultimate beach splurge.', flightCostPerPerson:1200, nightlyHotelRate:550, dailyExpensesPerPerson:100, tags:['Beach & Sun','Nature & Escape'], timing:['Winter Escape','Spring Break',"I'm Flexible"] },
@@ -947,11 +992,14 @@ app.post('/api/search', async (req, res) => {
       (d.dailyExpensesPerPerson * nightsNum * totalPeople);
 
     // Quality match — filter destinations whose mid-rate is far from implied rate
+    // Skip filter for White Christmas — we want to mix budget levels (domestic towns + intl snow cities)
     const rateRatio = midRate / impliedNightlyRate;
     const rateDiff = Math.abs(rateRatio - 1);
-    if (rateDiff > 0.5) return []; // skip destinations >50% off from implied rate
+    if (!isWhiteChristmas) {
+      if (rateDiff > 0.5) return []; // skip destinations >50% off from implied rate
+    }
     if (rateDiff <= 0.25) score += 20;
-    else score += 10;
+    else if (rateDiff <= 0.5) score += 10;
 
     // Budget fit — hard 5% over-budget cap, 85-100% sweet spot
     const ratio = estimatedCost / budgetNum;
@@ -1014,11 +1062,18 @@ app.post('/api/search', async (req, res) => {
       score -= 10;
     }
 
+    // UNESCO boost — reward destinations with verified UNESCO sites
+    let unescoLabel = null;
+    if (d.unesco === true) {
+      score += 10;
+      unescoLabel = d.unescoSite || 'UNESCO World Heritage Site';
+    }
+
     const flightCostTotal = effectiveFlightCost * totalPeople;
     const hotelCostTotal = recommendedRate * nightsNum * roomsNum;
     const expensesCostTotal = d.dailyExpensesPerPerson * nightsNum * totalPeople;
 
-    return [{ ...d, score, estimatedCost, hopRoute, travelWarning, budgetWarning, nightsWarning, recommendedTier, recommendedRate, travelHours, flightCostTotal, hotelCostTotal, expensesCostTotal }];
+    return [{ ...d, score, estimatedCost, hopRoute, travelWarning, budgetWarning, nightsWarning, recommendedTier, recommendedRate, travelHours, flightCostTotal, hotelCostTotal, expensesCostTotal, unesco: d.unesco || false, unescoLabel }];
   });
 
   // ── Domestic small towns (when "Small Town Charm" vibe selected) ──
@@ -1112,6 +1167,83 @@ app.post('/api/search', async (req, res) => {
     });
 
     scored.push(...domesticScored.filter(Boolean));
+  }
+
+  // ── Christmas towns (when White Christmas selected) ──
+  if (isWhiteChristmas) {
+    // Determine flight cost region from origin
+    const neAirports = new Set(['JFK','EWR','LGA','PHL','BOS','DCA','IAD','BWI','ABE','ACY','BDL','ALB','BTV','PWM','MHT','ISP','SWF','HPN','PIT','BUF','SYR','ROC','PHL']);
+    const seAirports = new Set(['ATL','CLT','MIA','MCO','TPA','FLL','PBI','JAX','SAV','CHS','RDU','GSO','RIC','ORF','MEM','BHM','HSV','SDF','LEX','MYR','PNS','MOB','JAN','SHV','TLH','RSW','SRQ','BNA','MSY']);
+    const mwAirports = new Set(['ORD','MDW','DTW','MSP','MKE','CMH','IND','CVG','CLE','STL','MCI','OMA','DSM','FSD','FAR','BIS','RAP']);
+    function getXmasFlightCost(town) {
+      if (!originCode) return 220;
+      // Check if origin airport is near the town's nearest airport
+      if (town.nearestAirport && town.nearestAirport.toUpperCase().includes(originCode)) return 150;
+      if (neAirports.has(originCode)) return 180;
+      if (seAirports.has(originCode)) return 220;
+      if (mwAirports.has(originCode)) return 200;
+      return 280; // West
+    }
+
+    const xmasScored = CHRISTMAS_TOWNS.map(town => {
+      let score = 0;
+      const flightCostPerPerson = getXmasFlightCost(town);
+      const dailyExpensesPerPerson = 50;
+      const recommendedRate = getTieredRate(town.nightlyMid, userTier);
+      const estimatedCost =
+        (flightCostPerPerson * totalPeople) +
+        (recommendedRate * nightsNum * roomsNum) +
+        (dailyExpensesPerPerson * nightsNum * totalPeople);
+
+      // Budget fit — same logic
+      const ratio = estimatedCost / budgetNum;
+      let budgetWarning = null;
+      if (ratio > 1.05) return null;
+      else if (ratio > 1.0) { score += 5; budgetWarning = `~${Math.round((ratio - 1.0) * 100)}% over budget`; }
+      else if (ratio >= 0.85) score += 30;
+      else if (ratio >= 0.70) score += 15;
+      else if (ratio >= 0.55) score += 8;
+      else score += 2;
+
+      // Snow reliability bonus
+      if (town.snowReliability === 'guaranteed') score += 15;
+      else if (town.snowReliability === 'high') score += 10;
+      else if (town.snowReliability === 'moderate') score += 5;
+
+      // White Christmas timing boost
+      score += 15;
+
+      // Domestic bonus
+      score += 10;
+
+      const flightCostTotal = flightCostPerPerson * totalPeople;
+      const hotelCostTotal = recommendedRate * nightsNum * roomsNum;
+      const expensesCostTotal = dailyExpensesPerPerson * nightsNum * totalPeople;
+
+      return {
+        flag: town.country === 'Canada' ? '🇨🇦' : '🇺🇸',
+        name: `${town.name}, ${town.state}`,
+        why: town.notes,
+        vibe: town.vibe,
+        score,
+        estimatedCost,
+        budgetWarning,
+        christmasTown: true,
+        snowReliability: town.snowReliability,
+        trainTown: town.trainTown || false,
+        domestic: true,
+        recommendedTier: userTier,
+        recommendedRate,
+        dailyExpensesPerPerson,
+        travelHours: 3,
+        flightCostTotal,
+        hotelCostTotal,
+        expensesCostTotal,
+        tags: town.tags || [],
+      };
+    });
+
+    scored.push(...xmasScored.filter(Boolean));
   }
 
   const top5 = scored.sort((a, b) => b.score - a.score).slice(0, 5);
