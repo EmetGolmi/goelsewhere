@@ -341,6 +341,10 @@
   }
   .trip-chip:hover { border-color: var(--gold); color: var(--cream); }
   .trip-chip.selected { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 500; }
+  .custom-nights-wrap { display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; }
+  .custom-nights-label { color: rgba(245,240,232,0.6); font-size:0.85rem; }
+  .custom-nights-input { width:4rem; background:rgba(245,240,232,0.08); border:1px solid rgba(245,240,232,0.2); border-radius:8px; padding:0.5rem; color:var(--cream); text-align:center; font-size:1rem; }
+  .nights-selected { color:rgba(245,240,232,0.45); font-size:0.8rem; margin-bottom:1.5rem; }
 
   /* Vibe */
   .vibe-grid {
@@ -698,11 +702,17 @@
         </div>
         <p class="step-question" style="margin-top:1.5rem">How long is the trip?</p>
         <div class="trip-chips">
-          <div class="trip-chip" data-length="5-7" onclick="selectTripLength(this)">5–7 days</div>
-          <div class="trip-chip selected" data-length="8-10" onclick="selectTripLength(this)">8–10 days</div>
-          <div class="trip-chip" data-length="11-14" onclick="selectTripLength(this)">11–14 days</div>
-          <div class="trip-chip" data-length="2+" onclick="selectTripLength(this)">2+ weeks</div>
+          <div class="trip-chip" data-length="weekend" onclick="selectTripLength(this)">Weekend</div>
+          <div class="trip-chip" data-length="long-weekend" onclick="selectTripLength(this)">Long Weekend</div>
+          <div class="trip-chip selected" data-length="week" onclick="selectTripLength(this)">Week</div>
+          <div class="trip-chip" data-length="two-weeks" onclick="selectTripLength(this)">Two Weeks</div>
+          <div class="trip-chip" data-length="custom" onclick="selectTripLength(this)">Custom</div>
         </div>
+        <div class="custom-nights-wrap" id="custom-nights-wrap" style="display:none">
+          <label class="custom-nights-label">Number of nights:</label>
+          <input class="custom-nights-input" type="number" id="custom-nights-input" min="1" max="60" value="8" onchange="updateCustomNights(this.value)">
+        </div>
+        <div class="nights-selected" id="nights-selected">7 nights selected</div>
         <div class="btn-row">
           <button class="btn-next" onclick="nextStep(2)">Budget →</button>
         </div>
@@ -803,14 +813,15 @@
 <script>
 // ── STATE ──
 const tripLengthMap = {
-  '5-7': { days: 6, nights: 6 },
-  '8-10': { days: 9, nights: 8 },
-  '11-14': { days: 13, nights: 12 },
-  '2+': { days: 18, nights: 16 },
+  'weekend': { days: 3, nights: 2 },
+  'long-weekend': { days: 4, nights: 3 },
+  'week': { days: 8, nights: 7 },
+  'two-weeks': { days: 15, nights: 14 },
+  'custom': null,
 };
 const state = {
   origin: '', adults: 2, children: 0, rooms: 1,
-  nights: 8, tripDays: 9, tripLength: '8-10',
+  nights: 7, tripDays: 8, tripLength: 'week',
   budget: null, timing: null, vibes: []
 };
 
@@ -937,10 +948,27 @@ function selectTripLength(el) {
   document.querySelectorAll('.trip-chip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
   const key = el.dataset.length;
-  const tl = tripLengthMap[key];
   state.tripLength = key;
-  state.nights = tl.nights;
-  state.tripDays = tl.days;
+  const customWrap = document.getElementById('custom-nights-wrap');
+  if (key === 'custom') {
+    customWrap.style.display = 'flex';
+    const val = parseInt(document.getElementById('custom-nights-input').value) || 8;
+    state.nights = val;
+    state.tripDays = val + 1;
+  } else {
+    customWrap.style.display = 'none';
+    const tl = tripLengthMap[key];
+    state.nights = tl.nights;
+    state.tripDays = tl.days;
+  }
+  document.getElementById('nights-selected').textContent = state.nights + ' nights selected';
+}
+
+function updateCustomNights(val) {
+  const n = Math.max(1, Math.min(60, parseInt(val) || 8));
+  state.nights = n;
+  state.tripDays = n + 1;
+  document.getElementById('nights-selected').textContent = n + ' nights selected';
 }
 
 // ── VIBES ──
@@ -1117,6 +1145,9 @@ function renderResults(results, budget, isWhiteChristmas) {
     const travelWarn = d.travelWarning
       ? `<div class="result-travel-warn">\u26A0 ${d.travelWarning}</div>`
       : '';
+    const nightsWarn = d.nightsWarning
+      ? `<div class="result-travel-warn">\u26A0 ${d.nightsWarning}</div>`
+      : '';
     const tierNote = d.recommendedTier
       ? `<div class="result-tier">${tierLabels[d.recommendedTier] || 'Hotel'} \u00b7 $${d.recommendedRate}/night</div>`
       : '';
@@ -1160,6 +1191,7 @@ function renderResults(results, budget, isWhiteChristmas) {
           ${lodgingHtml}
           ${hopNote}
           ${travelWarn}
+          ${nightsWarn}
           ${xmasNote}
           <span class="result-cta">Search flights & hotels \u2192</span>
         </div>
@@ -1184,10 +1216,12 @@ function renderResults(results, budget, isWhiteChristmas) {
 
 function resetAll() {
   state.origin = ''; state.adults = 2; state.children = 0; state.rooms = 1;
-  state.nights = 8; state.tripDays = 9; state.tripLength = '8-10';
+  state.nights = 7; state.tripDays = 8; state.tripLength = 'week';
   state.budget = null; state.timing = null; state.vibes = [];
   document.querySelectorAll('.chip, .vibe-card, .trip-chip').forEach(el => el.classList.remove('selected'));
-  document.querySelector('.trip-chip[data-length="8-10"]').classList.add('selected');
+  document.querySelector('.trip-chip[data-length="week"]').classList.add('selected');
+  document.getElementById('custom-nights-wrap').style.display = 'none';
+  document.getElementById('nights-selected').textContent = '7 nights selected';
   document.getElementById('zip-input').value = '';
   document.getElementById('airport-results').innerHTML = '';
   lastZipFetched = '';
