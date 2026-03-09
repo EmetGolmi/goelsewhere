@@ -203,6 +203,7 @@
   .airport-item {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 0.6rem;
     padding: 0.5rem 0.75rem;
     border-radius: 0.4rem;
@@ -222,6 +223,9 @@
   .airport-code { font-weight: 600; color: #e0e0e0; min-width: 2.2rem; }
   .airport-name { color: rgba(255,255,255,0.7); }
   .airport-drive { margin-left: auto; color: rgba(255,255,255,0.45); font-size: 0.82rem; white-space: nowrap; }
+  .airport-route-note { width: 100%; font-size: 0.72rem; color: rgba(255,255,255,0.35); margin-top: 1px; padding-left: 2.8rem; }
+  .airport-item.budget-regional { border-left: 2px solid #8fbc8f; }
+  .airport-badge { font-size: 0.6rem; background: rgba(143,188,143,0.2); color: #8fbc8f; border-radius: 3px; padding: 1px 5px; margin-left: 0.4rem; white-space: nowrap; }
   .airport-error { color: #c97a5a; font-size: 0.85rem; margin-top: 0.5rem; }
   .airport-loading { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 0.5rem; }
 
@@ -846,11 +850,16 @@ function renderAirports(airports) {
   airportResults.innerHTML = airports.map((a, i) => {
     const checked = i === 0 ? 'checked' : '';
     const selectedClass = i === 0 ? ' selected' : '';
-    return '<label class="airport-item' + selectedClass + '">' +
+    const isBudget = !!a.routeNote;
+    const budgetClass = isBudget ? ' budget-regional' : '';
+    const badge = isBudget ? '<span class="airport-badge">budget</span>' : '';
+    const routeLine = isBudget ? '<div class="airport-route-note">' + a.routeNote + '</div>' : '';
+    return '<label class="airport-item' + selectedClass + budgetClass + '">' +
       '<input type="checkbox" ' + checked + ' data-iata="' + a.iata + '" onchange="updateOriginFromAirports()">' +
       '<span class="airport-code">' + a.iata + '</span>' +
-      '<span class="airport-name">' + a.name + '</span>' +
+      '<span class="airport-name">' + a.name + badge + '</span>' +
       '<span class="airport-drive">' + formatDriveTime(a.driveMin) + '</span>' +
+      routeLine +
     '</label>';
   }).join('');
   updateOriginFromAirports();

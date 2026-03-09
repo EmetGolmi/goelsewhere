@@ -14,6 +14,8 @@ const AIRPORT_COORDS = {
   EWR: { lat: 40.6895, lng: -74.1745, name: 'Newark' },
   LGA: { lat: 40.7769, lng: -73.8740, name: 'New York LGA' },
   PHL: { lat: 39.8721, lng: -75.2411, name: 'Philadelphia' },
+  ABE: { lat: 40.6524, lng: -75.4408, name: 'Lehigh Valley', routeNote: 'Domestic only \u00b7 Florida, Nashville, Denver, Charlotte' },
+  ACY: { lat: 39.4576, lng: -74.5772, name: 'Atlantic City', routeNote: 'Domestic only \u00b7 Florida focus \u00b7 Budget carriers \u00b7 Parking free' },
   BOS: { lat: 42.3656, lng: -71.0096, name: 'Boston' },
   DCA: { lat: 38.8512, lng: -77.0402, name: 'Washington Reagan' },
   IAD: { lat: 38.9531, lng: -77.4565, name: 'Washington Dulles' },
@@ -746,6 +748,7 @@ app.get('/api/airports', (req, res) => {
         name: info.name,
         distanceMiles: Math.round(dist),
         driveMin: estimateDriveMin(dist),
+        ...(info.routeNote && { routeNote: info.routeNote }),
       });
     }
   }
