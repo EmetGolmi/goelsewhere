@@ -549,6 +549,43 @@
     font-style: italic;
     margin-top: 2px;
   }
+  .result-genre-label {
+    font-size: 0.7rem;
+    color: var(--gold);
+    opacity: 0.85;
+    margin-top: 3px;
+  }
+  /* Genre sub-chips */
+  .genre-section {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .genre-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.45);
+    margin-bottom: 0.5rem;
+  }
+  .genre-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .genre-chip {
+    background: rgba(245,240,232,0.06);
+    border: 1px solid rgba(245,240,232,0.12);
+    border-radius: 20px;
+    padding: 0.45rem 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.78rem;
+    color: rgba(245,240,232,0.65);
+    white-space: nowrap;
+  }
+  .genre-chip:hover { border-color: var(--gold); color: var(--cream); }
+  .genre-chip.selected { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 500; }
+  .genre-chip-emoji { margin-right: 0.3rem; }
   .result-card-wrap {
     margin-bottom: 0.5rem;
   }
@@ -830,6 +867,10 @@
             <div><div class="vibe-title">Farm & Countryside</div><div class="vibe-desc">Vineyards, rolling hills</div></div>
           </div>
         </div>
+        <div class="genre-section" id="genre-section" style="display:none">
+          <p class="genre-label" id="genre-label">What kind?</p>
+          <div class="genre-chips" id="genre-chips"></div>
+        </div>
         <div class="btn-row">
           <button class="btn-back" onclick="nextStep(3)">← Back</button>
           <button class="btn-next" id="find-btn" onclick="findDestinations()">Find my trip ✦</button>
@@ -863,7 +904,93 @@ const tripLengthMap = {
 const state = {
   origin: '', adults: 2, children: 0, rooms: 1,
   nights: 7, tripDays: 8, tripLength: 'week',
-  budget: null, timing: null, vibes: []
+  budget: null, timing: null, vibes: [], genres: []
+};
+
+const GENRE_MAP = {
+  'City & Culture': [
+    { id: 'city-grand',    label: 'World City',    emoji: '\u{1F306}', desc: 'Paris, Tokyo, NYC' },
+    { id: 'city-historic', label: 'Historic City', emoji: '\u{1F3F0}', desc: 'Prague, Cartagena, Havana' },
+    { id: 'city-emerging', label: 'Rising City',   emoji: '\u2728',    desc: 'Medell\u00EDn, Porto, Oaxaca' },
+    { id: 'city-coastal',  label: 'Coastal City',  emoji: '\u2693',    desc: 'Lisbon, Barcelona, Cape Town' },
+  ],
+  'Beach & Sun': [
+    { id: 'beach-caribbean',     label: 'Caribbean',       emoji: '\u{1F334}', desc: 'Jamaica, DR, Puerto Rico' },
+    { id: 'beach-pacific',       label: 'Pacific Islands', emoji: '\u{1F30A}', desc: 'Bali, Thailand, Fiji' },
+    { id: 'beach-mediterranean', label: 'Mediterranean',   emoji: '\u{1F3DB}', desc: 'Greece, Amalfi, Croatia' },
+    { id: 'beach-gulf',          label: 'Gulf Coast',      emoji: '\u{1F99E}', desc: 'Destin, 30A, Naples FL' },
+  ],
+  'Nature & Escape': [
+    { id: 'nature-mountain', label: 'Mountains',    emoji: '\u26F0',    desc: 'Rockies, Alps, Andes' },
+    { id: 'nature-wildlife', label: 'Wildlife',     emoji: '\u{1F981}', desc: 'Serengeti, Gal\u00E1pagos' },
+    { id: 'nature-jungle',  label: 'Jungle',        emoji: '\u{1F33F}', desc: 'Costa Rica, Amazon' },
+    { id: 'nature-coastal', label: 'Coastal Wild',  emoji: '\u{1F30A}', desc: 'Fiordland, Big Sur, Ha Long' },
+    { id: 'nature-desert',  label: 'Desert',        emoji: '\u{1F3DC}', desc: 'Sahara, Wadi Rum, Namib' },
+  ],
+  'Small Town Charm': [
+    { id: 'small-town-mountain', label: 'Mountain Town', emoji: '\u{1F3D4}', desc: 'Ouray, Taos, Telluride' },
+    { id: 'small-town-coastal',  label: 'Coastal Town',  emoji: '\u26F5',    desc: 'Kennebunkport, Positano' },
+    { id: 'small-town-historic', label: 'Historic Town', emoji: '\u{1F3DB}', desc: 'Jim Thorpe, Harpers Ferry' },
+    { id: 'small-town-arts',     label: 'Arts Town',     emoji: '\u{1F3A8}', desc: 'Santa Fe, Ashland, Marfa' },
+  ],
+  'Farm & Countryside': [
+    { id: 'farm-wine',     label: 'Wine Country', emoji: '\u{1F377}', desc: 'Tuscany, Napa, Douro' },
+    { id: 'farm-working',  label: 'Working Farm', emoji: '\u{1F69C}', desc: 'Vermont, Amish Country' },
+    { id: 'farm-pastoral', label: 'Countryside',  emoji: '\u{1F33E}', desc: 'Cotswolds, Provence, Loire' },
+  ],
+  'Family-First': [
+    { id: 'family-beach',      label: 'Beach',      emoji: '\u{1F3D6}', desc: 'Gulf Coast, Caribbean' },
+    { id: 'family-adventure',  label: 'Adventure',  emoji: '\u{1F392}', desc: 'Costa Rica, Yellowstone' },
+    { id: 'family-cultural',   label: 'Cultural',   emoji: '\u{1F3DB}', desc: 'DC, Quebec City, Mexico City' },
+    { id: 'family-theme-park', label: 'Theme Parks', emoji: '\u{1F3A2}', desc: 'Orlando, Anaheim' },
+  ],
+  'Off the Map': [
+    { id: 'off-the-map-emerging',  label: 'Emerging',  emoji: '\u{1F5FA}', desc: 'Georgia, Albania, Kosovo' },
+    { id: 'off-the-map-remote',    label: 'Remote',    emoji: '\u{1F3D4}', desc: 'Marquette, Faroe Islands' },
+    { id: 'off-the-map-spiritual', label: 'Spiritual', emoji: '\u{1F6D5}', desc: 'Luang Prabang, Lalibela' },
+    { id: 'off-the-map-extreme',   label: 'Extreme',   emoji: '\u{1F30B}', desc: 'Danakil, Virunga, Bagan' },
+  ],
+  'White Christmas': [
+    { id: 'city-christmas',       label: 'Christmas City',  emoji: '\u{1F3D9}', desc: 'Prague, Quebec City, Vienna' },
+    { id: 'small-town-christmas', label: 'Christmas Town',  emoji: '\u{1F3D8}', desc: 'Ouray, Stowe, Leavenworth' },
+    { id: 'nature-christmas',     label: 'Wild Christmas',  emoji: '\u{1F332}', desc: 'Northern Lights, cabins, reindeer' },
+  ],
+};
+
+const GENRE_LABELS = {
+  'city-grand':           '\u{1F306} World City',
+  'city-historic':        '\u{1F3F0} Historic City',
+  'city-emerging':        '\u2728 Rising City',
+  'city-coastal':         '\u2693 Coastal City',
+  'city-christmas':       '\u{1F384} Christmas City',
+  'small-town-mountain':  '\u{1F3D4} Mountain Town',
+  'small-town-coastal':   '\u26F5 Coastal Town',
+  'small-town-historic':  '\u{1F3DB} Historic Town',
+  'small-town-arts':      '\u{1F3A8} Arts Town',
+  'small-town-christmas': '\u{1F3D8} Christmas Town',
+  'nature-arctic':        '\u{1F30C} Arctic & Aurora',
+  'nature-mountain':      '\u26F0 Mountain Wild',
+  'nature-jungle':        '\u{1F33F} Jungle',
+  'nature-desert':        '\u{1F3DC} Desert',
+  'nature-coastal':       '\u{1F30A} Coastal Wild',
+  'nature-wildlife':      '\u{1F981} Wildlife',
+  'nature-christmas':     '\u{1F332} Wild Christmas',
+  'beach-caribbean':      '\u{1F334} Caribbean',
+  'beach-pacific':        '\u{1F30A} Pacific Islands',
+  'beach-mediterranean':  '\u{1F3DB} Mediterranean',
+  'beach-gulf':           '\u{1F99E} Gulf Coast',
+  'beach-atlantic':       '\u{1F30A} Atlantic Coast',
+  'farm-wine':            '\u{1F377} Wine Country',
+  'farm-working':         '\u{1F69C} Farm Country',
+  'farm-pastoral':        '\u{1F33E} Countryside',
+  'family-beach':         '\u{1F3D6} Family Beach',
+  'family-adventure':     '\u{1F392} Family Adventure',
+  'family-cultural':      '\u{1F3DB} Family Cultural',
+  'family-theme-park':    '\u{1F3A2} Theme Parks',
+  'off-the-map-emerging': '\u{1F5FA} Emerging Destination',
+  'off-the-map-remote':   '\u{1F3D4} Remote',
+  'off-the-map-spiritual':'\u{1F6D5} Spiritual Journey',
+  'off-the-map-extreme':  '\u{1F30B} Extreme',
 };
 
 // ── ZIP → AIRPORT LOOKUP ──
@@ -982,6 +1109,7 @@ function selectChip(el, group) {
   const dates = clone.querySelector('.chip-dates');
   if (dates) dates.remove();
   state[group] = clone.textContent.trim();
+  if (group === 'timing') updateGenreChips();
 }
 
 // ── TRIP LENGTH ──
@@ -1019,6 +1147,42 @@ function toggleVibe(el) {
   const idx = state.vibes.indexOf(vibe);
   if (idx > -1) state.vibes.splice(idx, 1);
   else state.vibes.push(vibe);
+  updateGenreChips();
+}
+
+function updateGenreChips() {
+  const section = document.getElementById('genre-section');
+  const container = document.getElementById('genre-chips');
+  const label = document.getElementById('genre-label');
+  state.genres = [];
+
+  // Collect genres from all selected vibes + timing
+  const vibeKey = state.vibes.length === 1 ? state.vibes[0] : null;
+  const timingKey = state.timing === 'White Christmas' ? 'White Christmas' : null;
+  const activeKey = vibeKey || timingKey;
+
+  if (!activeKey || !GENRE_MAP[activeKey]) {
+    section.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+
+  const genres = GENRE_MAP[activeKey];
+  label.textContent = 'What kind of ' + activeKey.toLowerCase() + '?';
+  container.innerHTML = genres.map(g =>
+    '<div class="genre-chip" data-genre="' + g.id + '" onclick="toggleGenre(this)">' +
+      '<span class="genre-chip-emoji">' + g.emoji + '</span>' + g.label +
+    '</div>'
+  ).join('');
+  section.style.display = 'block';
+}
+
+function toggleGenre(el) {
+  el.classList.toggle('selected');
+  const genre = el.dataset.genre;
+  const idx = state.genres.indexOf(genre);
+  if (idx > -1) state.genres.splice(idx, 1);
+  else state.genres.push(genre);
 }
 
 // ── STEP NAV ──
@@ -1143,6 +1307,7 @@ async function findDestinations() {
         nights: state.nights,
         rooms: state.rooms,
         vibes: state.vibes,
+        genres: state.genres,
         tripDays: state.tripDays
       })
     });
@@ -1212,6 +1377,9 @@ function renderResults(results, budget, isWhiteChristmas) {
     const vibeSub = d.vibe
       ? `<div class="result-vibe">${d.vibe}</div>`
       : '';
+    const genreLabel = d.matchedGenre && GENRE_LABELS[d.matchedGenre]
+      ? `<div class="result-genre-label">${GENRE_LABELS[d.matchedGenre]}</div>`
+      : '';
 
     // Lodging tags — show top 2 most distinctive
     let lodgingHtml = '';
@@ -1244,6 +1412,7 @@ function renderResults(results, budget, isWhiteChristmas) {
         <span class="result-flag">${d.flag}</span>
         <div class="result-body">
           <div class="result-name">${d.name}</div>
+          ${genreLabel}
           ${vibeSub}
           <div class="result-why">${d.why}</div>
           ${tierNote}
@@ -1278,8 +1447,10 @@ function renderResults(results, budget, isWhiteChristmas) {
 function resetAll() {
   state.origin = ''; state.adults = 2; state.children = 0; state.rooms = 1;
   state.nights = 7; state.tripDays = 8; state.tripLength = 'week';
-  state.budget = null; state.timing = null; state.vibes = [];
+  state.budget = null; state.timing = null; state.vibes = []; state.genres = [];
   document.querySelectorAll('.chip, .vibe-card, .trip-chip').forEach(el => el.classList.remove('selected'));
+  document.getElementById('genre-section').style.display = 'none';
+  document.getElementById('genre-chips').innerHTML = '';
   document.querySelector('.trip-chip[data-length="week"]').classList.add('selected');
   document.getElementById('custom-nights-wrap').style.display = 'none';
   document.getElementById('nights-selected').textContent = '7 nights selected';

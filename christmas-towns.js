@@ -15,6 +15,8 @@
  *   vibe         — One-line vibe descriptor
  *   notes        — Editorial description
  *   nightlyMid   — Estimated midrange nightly hotel rate (USD)
+ *   genre        — Array of genre tags for filtering
+ *   christmasVibe — Primary Christmas vibe category
  */
 
 module.exports.CHRISTMAS_TOWNS = [
@@ -35,6 +37,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Victorian ice-climbing town ringed by 14,000-ft peaks',
     notes: 'The Switzerland of America. Hot springs in the snow, Victorian hotel facades strung with lights, Box Cañon Falls frozen solid. One of the most cinematic Christmas settings in North America.',
     nightlyMid: 180,
+    genre: ['small-town-mountain', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -51,6 +55,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Frozen Victorian mining town at 9,318 ft',
     notes: 'End of the line for the Durango & Silverton Narrow Gauge Railroad. The whole town is a National Historic Landmark. At Christmas, snow is guaranteed and crowds are near zero.',
     nightlyMid: 140,
+    genre: ['small-town-mountain', 'small-town-christmas', 'small-town-historic'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -67,6 +73,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Upscale ski box-canyon town with Victorian bones',
     notes: 'A box canyon town that goes full Christmas — free gondola to Mountain Village, carolers on Colorado Ave, ski-in/ski-out from a National Historic District. Budget for it.',
     nightlyMid: 350,
+    genre: ['small-town-mountain', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -83,6 +91,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Western ski town with hot springs and Champagne Powder',
     notes: 'Less sceney than Aspen or Telluride. Cowboy Christmas vibes — western storefronts, hot springs, and some of the driest powder in Colorado. Locals actually live here.',
     nightlyMid: 220,
+    genre: ['small-town-mountain', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -99,6 +109,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Adobe art town with farolito-lit Christmas Eve processions',
     notes: 'Christmas Eve in Taos Pueblo — hundreds of farolitos (paper bag luminarias) lining the ancient adobe walls, bonfires, and traditional dances. Nothing else like it. Taos Ski Valley 30 min away.',
     nightlyMid: 160,
+    genre: ['small-town-arts', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -115,6 +127,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'High desert capital city draped in farolitos and snow',
     notes: 'Canyon Road Christmas Eve — thousands of farolitos, bonfires, carolers, and art galleries open late. The plaza goes full Victorian Christmas. Snow is reliable at 7,000 ft.',
     nightlyMid: 200,
+    genre: ['small-town-arts', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -131,6 +145,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Route 66 mountain town with real snow, Grand Canyon day trip',
     notes: 'Arizona\'s surprise Christmas pick. At 6,900 ft it gets genuine snow while Phoenix bakes. Historic downtown, Route 66 neon, Grand Canyon 90 min away. The Polar Express runs from here.',
     nightlyMid: 130,
+    genre: ['small-town-christmas', 'small-town-historic'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -147,6 +163,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Grand Teton gateway with elk herds and antler arches',
     notes: 'Elk antler arches on the town square, National Elk Refuge sleigh rides, Grand Teton peaks lit by alpenglow. World-class skiing. The most photogenic Christmas in the West.',
     nightlyMid: 400,
+    genre: ['small-town-mountain', 'small-town-christmas', 'nature-christmas'],
+    christmasVibe: 'nature-christmas',
   },
 
   {
@@ -163,6 +181,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Unpretentious Montana ski town near Glacier National Park',
     notes: 'The anti-Aspen. Whitefish Mountain Resort, a charming walkable downtown, and the Empire Builder Amtrak stops here. Glacier National Park is snowed in and spectacular. Affordable by ski town standards.',
     nightlyMid: 160,
+    genre: ['small-town-mountain', 'small-town-christmas', 'nature-christmas'],
+    christmasVibe: 'nature-christmas',
   },
 
   // ─── PACIFIC NORTHWEST ────────────────────────────────────────────────────
@@ -181,6 +201,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'A full Bavarian village that transforms completely for Christmas',
     notes: 'This one goes all the way. An entire town built to look like a Bavarian alpine village, and at Christmas it becomes something close to surreal — half a million lights, Christmas markets, sleigh rides, carolers in lederhosen. Book October.',
     nightlyMid: 200,
+    genre: ['small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -197,6 +219,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Victorian seaport with arts scene and Olympic Peninsula access',
     notes: 'The best-preserved Victorian seaport in the Pacific Northwest. Less snow-reliable but the architecture is spectacular and the ferry ride from Seattle is part of the experience.',
     nightlyMid: 150,
+    genre: ['small-town-coastal', 'small-town-arts'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -213,6 +237,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Shakespeare theater town with Victorian charm and Bear Creek',
     notes: 'Oregon Shakespeare Festival town that pivots beautifully to Christmas. Lithia Park, the creek, the Elizabethan theater district all draped in lights. Less snow than the Rockies but deeply charming.',
     nightlyMid: 140,
+    genre: ['small-town-arts', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -229,6 +255,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Lake-town ski destination famous for its Winter Carnival ice sculptures',
     notes: 'Payette Lake frozen solid, Brundage Mountain for skiing, and the McCall Winter Carnival ice sculptures are legitimately world-class. Underrated and genuinely affordable.',
     nightlyMid: 130,
+    genre: ['small-town-mountain', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   // ─── NEW ENGLAND ─────────────────────────────────────────────────────────
@@ -247,6 +275,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'The quintessential New England Christmas village',
     notes: 'Covered bridges, a village green with a white church, the Woodstock Inn glowing, and real Vermont snow. This is the postcard. If you want New England Christmas, start here.',
     nightlyMid: 250,
+    genre: ['small-town-christmas', 'small-town-historic'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -263,6 +293,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Vermont\'s premier ski village with Von Trapp Family Lodge',
     notes: 'The Von Trapp Family Lodge is literally here — same family, same land, Austrian chalets in Vermont snow. Mountain Road is lit up, the village is walkable, Mt. Mansfield skiing is excellent.',
     nightlyMid: 280,
+    genre: ['small-town-mountain', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -279,6 +311,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Refined Vermont village with Equinox Mountain and historic inns',
     notes: 'The Equinox Resort anchors a genuinely beautiful village. Orvis flagship is here (for the gifter in the group). Southern Vermont Arts Center, covered bridges, and solid snow.',
     nightlyMid: 200,
+    genre: ['small-town-christmas', 'small-town-historic'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -295,6 +329,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Gilded Age Berkshires estate town with arts and architecture',
     notes: 'Shakespeare & Company, the Mount (Edith Wharton\'s estate), and Gilded Age cottages. The Berkshires at Christmas is understated and elegant. Blantyre hotel is special.',
     nightlyMid: 280,
+    genre: ['small-town-arts', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -311,6 +347,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Maine coastal village famous for its Christmas Prelude festival',
     notes: 'Kennebunkport Christmas Prelude is a 10-day festival — lobster stew tastings, caroling boats in the harbor, tree lightings. The Bush family compound is visible from the water. Deeply New England.',
     nightlyMid: 220,
+    genre: ['small-town-coastal', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -327,6 +365,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Cape Ann fishing village and artists colony at the edge of winter',
     notes: 'Motif Number 1 (the most painted building in America) looks best in winter snow with no tourists. Commuter rail from Boston. Small, genuine, and very New England.',
     nightlyMid: 160,
+    genre: ['small-town-coastal', 'small-town-arts'],
+    christmasVibe: 'small-town-christmas',
   },
 
   // ─── MID-ATLANTIC / APPALACHIAN ───────────────────────────────────────────
@@ -345,6 +385,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Victorian coal town in a gorge with the Lehigh Gorge Scenic Railway',
     notes: 'Called the "Switzerland of America" before Ouray stole the nickname. A Victorian town built into a gorge — Opera House, Asa Packer Mansion, cobblestone Broadway St. The Lehigh Gorge Scenic Railway runs Christmas trains. One of the best-kept secrets in PA.',
     nightlyMid: 140,
+    genre: ['small-town-historic', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -361,6 +403,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Amish country train town with America\'s oldest operating railroad',
     notes: 'The Strasburg Rail Road (est. 1832, oldest operating in the US) runs the Santa Claus Special through Lancaster County farmland. Amish buggies in the snow. The Railroad Museum of Pennsylvania is next door. Perfect family Christmas.',
     nightlyMid: 120,
+    genre: ['small-town-historic', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -377,6 +421,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Delaware River arts town with the New Hope & Ivyland Railroad',
     notes: 'New Hope & Ivyland Railroad runs the North Pole Express. The town sits on the Delaware River across from Lambertville NJ — two walkable arts/antiques towns connected by a bridge. Easy day trip from NYC or Philly.',
     nightlyMid: 160,
+    genre: ['small-town-arts', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -393,6 +439,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Civil War battlefield town with Victorian storefronts and ghost tours',
     notes: 'The battlefield at Christmas with light snow is quietly extraordinary. The town has excellent Victorian architecture, and the ghost tour industry gives it an unexpected edge. David Wills House where Lincoln finalized the Gettysburg Address.',
     nightlyMid: 130,
+    genre: ['small-town-historic', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -409,6 +457,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Historic town at the confluence of two rivers, accessible from DC',
     notes: 'Where the Potomac meets the Shenandoah. Thomas Jefferson called the view "worth a voyage across the Atlantic." The lower town is a National Historic Park — original 19th century stone buildings, almost no modern intrusion. Easy from DC.',
     nightlyMid: 110,
+    genre: ['small-town-historic', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -425,6 +475,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Tiny historic downtown near The Greenbrier resort',
     notes: 'Best small downtown in West Virginia. The Greenbrier resort is 12 miles away (and worth a splurge). Carnegie Hall (the real one, in WV) hosts Christmas concerts. Genuinely undiscovered.',
     nightlyMid: 100,
+    genre: ['small-town-historic', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -441,6 +493,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Southwest Virginia arts town on the Virginia Creeper Trail',
     notes: 'The Martha Washington Inn (1832) anchors a beautiful historic district. Barter Theatre is one of the oldest professional theaters in the US. Virginia Creeper Trail for winter cycling. Deeply Appalachian and proud of it.',
     nightlyMid: 140,
+    genre: ['small-town-arts', 'small-town-historic'],
+    christmasVibe: 'small-town-christmas',
   },
 
   // ─── MIDWEST / GREAT LAKES ────────────────────────────────────────────────
@@ -459,6 +513,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Grant\'s Victorian hometown on the Mississippi bluffs, fully Christmas',
     notes: 'Ulysses Grant\'s home town, and it takes Christmas seriously. Main Street is 85% 19th century commercial buildings. The entire town decorates. Jo Daviess County hills look like Vermont with better bourbon.',
     nightlyMid: 150,
+    genre: ['small-town-historic', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -475,6 +531,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Lake Superior fishing village with Apostle Islands ice caves nearby',
     notes: 'When Lake Superior freezes hard enough, the Apostle Islands sea caves become an ice cave wonderland you walk to on the frozen lake. Bayfield is tiny, beautiful, and the most remote pick on this list. The brave will love it.',
     nightlyMid: 120,
+    genre: ['small-town-coastal', 'small-town-christmas', 'off-the-map-remote'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -491,6 +549,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Leelanau Peninsula wine country village on Lake Michigan',
     notes: 'A genuinely beautiful small town on the Leelanau Peninsula. Wineries, cherry orchards under snow, Lake Michigan views. Traverse City is 15 min away for more amenities. Michigan\'s answer to Vermont wine country.',
     nightlyMid: 140,
+    genre: ['small-town-coastal', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -507,6 +567,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Rugged Upper Peninsula iron port city with guaranteed massive snow',
     notes: 'Marquette averages 140+ inches of snow. It\'s not quaint — it\'s genuinely wild. Lake Superior crashing against iron-ore cliffs in a December blizzard. For the traveler who wants to feel small in winter. Presque Isle Park is stunning.',
     nightlyMid: 110,
+    genre: ['off-the-map-remote', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   // ─── CANADA ───────────────────────────────────────────────────────────────
@@ -525,6 +587,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'The most European Christmas in North America — walled city, château, guaranteed snow',
     notes: 'The single best-kept secret on this list for Americans. A UNESCO World Heritage walled city with the Château Frontenac lit up, a German-style Christmas market, horse-drawn sleighs on cobblestones, and snow that never fails. Four hours from Boston. Five from NYC. Almost nobody thinks to go here for Christmas.',
     nightlyMid: 200,
+    genre: ['city-historic', 'city-christmas', 'small-town-christmas'],
+    christmasVibe: 'city-christmas',
   },
 
   {
@@ -541,6 +605,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Canadian Rockies resort town with Fairmont Banff Springs and guaranteed snow',
     notes: 'The Fairmont Banff Springs — a castle in the Rockies — at Christmas is something from a fairy tale. Elk wander the streets. The hot springs are open in -20°C. Lake Louise is 45 min away and frozen solid.',
     nightlyMid: 320,
+    genre: ['small-town-mountain', 'nature-christmas', 'nature-mountain'],
+    christmasVibe: 'nature-christmas',
   },
 
   {
@@ -557,6 +623,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Georgian Bay ski town, Toronto\'s winter weekend escape',
     notes: 'Blue Mountain resort anchors a genuinely charming waterfront town on Georgian Bay. Collingwood is what Torontonians do at Christmas. For Americans — fly into Toronto, drive an hour and a half.',
     nightlyMid: 180,
+    genre: ['small-town-mountain', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
   {
@@ -573,6 +641,8 @@ module.exports.CHRISTMAS_TOWNS = [
     vibe: 'Loyalist wine town at the mouth of the Niagara River — ice wine harvest season',
     notes: 'Ice wine harvest happens December–January and NOTL is the heart of it. Loyalist-era British architecture draped in Christmas lights, the Shaw Festival theatre, and Niagara Falls 20 min away (and spectacular in winter with ice formation).',
     nightlyMid: 190,
+    genre: ['small-town-coastal', 'small-town-christmas'],
+    christmasVibe: 'small-town-christmas',
   },
 
 ];
