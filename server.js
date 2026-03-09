@@ -685,15 +685,23 @@ app.post('/api/search', async (req, res) => {
 
     // Budget fit (max 50 pts) — reward using the budget well, penalize over or way under
     const ratio = estimatedCost / budgetNum;
-    if (ratio > 1.0) {
-      // Over budget: steep penalty
-      score -= Math.min(50, (ratio - 1.0) * 200);
-    } else if (ratio >= 0.6) {
-      // Sweet spot: 60-100% of budget — higher utilization scores better
-      score += 35 + 15 * ((ratio - 0.6) / 0.4);
+    let budgetWarning = null;
+    if (ratio > 1.1) {
+      // Over budget by >10%: steep penalty
+      score -= Math.min(50, (ratio - 1.1) * 200);
+    } else if (ratio > 1.0) {
+      // Slightly over budget (1-10%): small penalty, show with warning
+      score -= (ratio - 1.0) * 50;
+      budgetWarning = `~${Math.round((ratio - 1.0) * 100)}% over budget`;
+    } else if (ratio >= 0.75) {
+      // Sweet spot: 75-100% of budget — higher utilization scores better
+      score += 35 + 15 * ((ratio - 0.75) / 0.25);
+    } else if (ratio >= 0.7) {
+      // Slightly under sweet spot: partial credit
+      score += 25 * ((ratio - 0.7) / 0.05);
     } else {
-      // Way under budget: scales down linearly
-      score += 35 * (ratio / 0.6);
+      // Way under budget (<70%): bigger penalty
+      score += 20 * (ratio / 0.7);
     }
 
     // Route accessibility from origin (+15 nonstop, -5 connections only)
@@ -728,7 +736,7 @@ app.post('/api/search', async (req, res) => {
       travelWarning = `~${Math.round(totalTravelDays)} of ${tripDaysNum} days spent in transit`;
     }
 
-    return { ...d, score, estimatedCost, hopRoute, travelWarning };
+    return { ...d, score, estimatedCost, hopRoute, travelWarning, budgetWarning };
   });
 
   // ── Domestic small towns (when "Small Town Charm" vibe selected) ──
@@ -759,14 +767,20 @@ app.post('/api/search', async (req, res) => {
         (t.nightlyHotelRate * nightsNum * roomsNum) +
         (t.dailyExpensesPerPerson * nightsNum * totalPeople);
 
-      // Budget fit (same logic)
+      // Budget fit (same logic as international)
       const ratio = estimatedCost / budgetNum;
-      if (ratio > 1.0) {
-        score -= Math.min(50, (ratio - 1.0) * 200);
-      } else if (ratio >= 0.6) {
-        score += 35 + 15 * ((ratio - 0.6) / 0.4);
+      let budgetWarning = null;
+      if (ratio > 1.1) {
+        score -= Math.min(50, (ratio - 1.1) * 200);
+      } else if (ratio > 1.0) {
+        score -= (ratio - 1.0) * 50;
+        budgetWarning = `~${Math.round((ratio - 1.0) * 100)}% over budget`;
+      } else if (ratio >= 0.75) {
+        score += 35 + 15 * ((ratio - 0.75) / 0.25);
+      } else if (ratio >= 0.7) {
+        score += 25 * ((ratio - 0.7) / 0.05);
       } else {
-        score += 35 * (ratio / 0.6);
+        score += 20 * (ratio / 0.7);
       }
 
       // Vibe match
@@ -783,6 +797,7 @@ app.post('/api/search', async (req, res) => {
         score,
         estimatedCost,
         flightCostPerPerson,
+        budgetWarning,
         domestic: true,
       };
     });
