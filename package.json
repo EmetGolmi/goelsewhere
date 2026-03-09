@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/EmetGolmi/goelsewhere#readme",
   "dependencies": {
+    "@railway/cli": "^4.31.0",
     "amadeus": "^11.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",

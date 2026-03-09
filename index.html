@@ -314,6 +314,8 @@
   .chip:hover { border-color: var(--gold); color: var(--cream); }
   .chip.selected { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 500; }
   .chip-icon { font-size: 1.3rem; display: block; margin-bottom: 0.3rem; }
+  .chip-dates { display: block; font-size: 0.65rem; margin-top: 0.2rem; color: rgba(245,240,232,0.4); }
+  .chip.selected .chip-dates { color: rgba(30,30,28,0.55); }
 
   /* Trip length chips */
   .trip-chips {
@@ -449,6 +451,13 @@
     line-height: 1.4;
     opacity: 0.85;
   }
+  .result-tier {
+    font-size: 0.72rem;
+    color: var(--gold);
+    margin-top: 4px;
+    line-height: 1.4;
+    opacity: 0.75;
+  }
   .result-travel-warn {
     font-size: 0.72rem;
     color: #c97a5a;
@@ -470,17 +479,95 @@
     color: var(--gold);
   }
 
+  .result-xmas {
+    font-size: 0.72rem;
+    color: #8fbc8f;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .result-lodging {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+  .lodging-pill {
+    font-size: 0.65rem;
+    background: rgba(245,240,232,0.08);
+    border: 1px solid rgba(245,240,232,0.12);
+    border-radius: 20px;
+    padding: 2px 8px;
+    color: rgba(245,240,232,0.6);
+    white-space: nowrap;
+  }
+  .result-card-wrap {
+    margin-bottom: 0.5rem;
+  }
+  .breakdown-toggle {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: rgba(245,240,232,0.4);
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 4px 0;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .breakdown-toggle:hover { color: var(--gold); }
+  .breakdown-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    background: rgba(245,240,232,0.04);
+    border: 1px solid rgba(245,240,232,0.08);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 0 1.25rem;
+  }
+  .breakdown-panel.open {
+    max-height: 300px;
+    padding: 0.8rem 1.25rem;
+  }
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.78rem;
+    color: rgba(245,240,232,0.7);
+    padding: 3px 0;
+  }
+  .breakdown-row span:first-child { flex: 0 0 140px; }
+  .breakdown-row span:nth-child(2) { flex: 0 0 80px; text-align: right; color: var(--cream); }
+  .breakdown-detail {
+    flex: 1;
+    text-align: right;
+    font-size: 0.68rem;
+    color: rgba(245,240,232,0.4);
+  }
+  .breakdown-divider {
+    border-top: 1px solid rgba(245,240,232,0.1);
+    margin: 5px 0;
+  }
+  .breakdown-total span:nth-child(2) { color: var(--gold); font-weight: 500; }
+  .breakdown-transit {
+    font-size: 0.7rem;
+    margin-top: 6px;
+    text-align: center;
+  }
+
   /* Slide-in anim for result cards */
-  .result-card {
+  .result-card-wrap {
     opacity: 0;
     transform: translateY(10px);
     animation: fadeUp 0.5s forwards;
   }
-  .result-card:nth-child(1) { animation-delay: 0.1s; }
-  .result-card:nth-child(2) { animation-delay: 0.22s; }
-  .result-card:nth-child(3) { animation-delay: 0.34s; }
-  .result-card:nth-child(4) { animation-delay: 0.46s; }
-  .result-card:nth-child(5) { animation-delay: 0.58s; }
+  .result-card-wrap:nth-child(1) { animation-delay: 0.1s; }
+  .result-card-wrap:nth-child(2) { animation-delay: 0.22s; }
+  .result-card-wrap:nth-child(3) { animation-delay: 0.34s; }
+  .result-card-wrap:nth-child(4) { animation-delay: 0.46s; }
+  .result-card-wrap:nth-child(5) { animation-delay: 0.58s; }
 
   /* Photo credits */
   .photo-credit {
@@ -637,12 +724,12 @@
         <p class="step-label">Step 3 of 4</p>
         <p class="step-question">When are you thinking?</p>
         <div class="chip-grid">
-          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">🌸</span>Spring Break</div>
-          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">☀️</span>Summer</div>
-          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">🍂</span>Fall</div>
-          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">❄️</span>Winter Escape</div>
-          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">🎄</span>White Christmas</div>
-          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">🗓️</span>I'm Flexible</div>
+          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">🌸</span>Spring Break<span class="chip-dates">Mar 1 – Apr 15</span></div>
+          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">☀️</span>Summer<span class="chip-dates">Jun 15 – Aug 31</span></div>
+          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">🍂</span>Fall<span class="chip-dates">Sep 1 – Nov 15</span></div>
+          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">❄️</span>Winter Escape<span class="chip-dates">Jan 5 – Mar 1</span></div>
+          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">🎄</span>White Christmas<span class="chip-dates">Dec 22 – Jan 2</span></div>
+          <div class="chip" onclick="selectChip(this,'timing')"><span class="chip-icon">🗓️</span>I'm Flexible<span class="chip-dates">Any time of year</span></div>
         </div>
         <div class="btn-row">
           <button class="btn-back" onclick="nextStep(2)">← Back</button>
@@ -829,7 +916,11 @@ function selectChip(el, group) {
     if (c.getAttribute('onclick').includes(group)) c.classList.remove('selected');
   });
   el.classList.add('selected');
-  state[group] = el.textContent.trim();
+  // Extract label text only, excluding .chip-dates sub-label
+  const clone = el.cloneNode(true);
+  const dates = clone.querySelector('.chip-dates');
+  if (dates) dates.remove();
+  state[group] = clone.textContent.trim();
 }
 
 // ── TRIP LENGTH ──
@@ -990,7 +1081,7 @@ async function findDestinations() {
         : (bookUrls[d.name] || 'https://www.google.com/travel/flights')
     }));
 
-    renderResults(results, budget);
+    renderResults(results, budget, data.isWhiteChristmas);
     nextStep(5);
   } catch (err) {
     console.error('Search error:', err);
@@ -1001,34 +1092,84 @@ async function findDestinations() {
   }
 }
 
-function renderResults(results, budget) {
+function renderResults(results, budget, isWhiteChristmas) {
   const container = document.getElementById('results-container');
   const totalPeople = state.adults + state.children;
   document.getElementById('results-headline').textContent = 'Here\u2019s where you should go.';
 
-  container.innerHTML = results.map(d => {
+  const tierLabels = { budget: 'Budget guesthouse', midrange: 'Midrange hotel', comfort: 'Comfort hotel', upscale: 'Upscale hotel' };
+  const lodgingIcons = { 'riad': '\u{1F3E0}', 'kasbah': '\u{1F3F0}', 'ryokan': '\u{1F3EF}', 'kominka': '\u{1F3E1}', 'machiya-townhouse': '\u{1F3E1}', 'capsule-hotel': '\u{1F4A4}', 'glass-igloo': '\u{1F9CA}', 'ice-hotel': '\u{1F9CA}', 'ice-hotel-nearby': '\u{1F9CA}', 'log-cabin': '\u{1F6D6}', 'arctic-resort': '\u{2744}\uFE0F', 'wilderness-cabin': '\u{1F6D6}', 'design-hotel': '\u{1F3E8}', 'ski-lodge': '\u{26F7}\uFE0F', 'cave-hotel': '\u{1FAA8}', 'parador': '\u{1F3F0}', 'hanok': '\u{1F3EF}', 'pension': '\u{1F3E8}', 'great-house': '\u{1F3DB}\uFE0F', 'eco-lodge': '\u{1F33F}', 'villa': '\u{1F3D6}\uFE0F', 'quinta': '\u{1F3E1}', 'colonial-mansion': '\u{1F3DB}\uFE0F', 'vacation-rental': '\u{1F3E0}', 'bed-and-breakfast': '\u{2615}', 'motel': '\u{1F3E8}', 'boutique-hotel': '\u{1F3E8}', 'guesthouse': '\u{1F3E0}', 'hostel': '\u{1F6CC}', 'resort': '\u{1F3D6}\uFE0F' };
+  const genericTypes = new Set(['boutique-hotel', 'guesthouse', 'hostel', 'resort', 'motel']);
+
+  container.innerHTML = results.map((d, i) => {
     const hopNote = d.hopRoute
-      ? `<div class="result-hop">✈ Fly to ${d.hopRoute.gatewayCity}, then ${d.hopRoute.hours}hr ${d.hopRoute.mode} · $${d.hopRoute.totalPerPerson}/pp transport</div>`
+      ? `<div class="result-hop">\u2708 Fly to ${d.hopRoute.gatewayCity}, then ${d.hopRoute.hours}hr ${d.hopRoute.mode} \u00b7 $${d.hopRoute.totalPerPerson}/pp transport</div>`
       : '';
     const travelWarn = d.travelWarning
-      ? `<div class="result-travel-warn">⚠ ${d.travelWarning}</div>`
+      ? `<div class="result-travel-warn">\u26A0 ${d.travelWarning}</div>`
       : '';
+    const tierNote = d.recommendedTier
+      ? `<div class="result-tier">${tierLabels[d.recommendedTier] || 'Hotel'} \u00b7 $${d.recommendedRate}/night</div>`
+      : '';
+    const xmasNote = isWhiteChristmas
+      ? `<div class="result-xmas">\u2713 Dec 24 & Dec 31 in-destination guaranteed</div>`
+      : '';
+
+    // Lodging tags — show top 2 most distinctive
+    let lodgingHtml = '';
+    if (d.lodgingTypes && d.lodgingTypes.length) {
+      const distinctive = d.lodgingTypes.filter(t => !genericTypes.has(t));
+      const picks = distinctive.length >= 2 ? distinctive.slice(0, 2) : [...distinctive, ...d.lodgingTypes.filter(t => genericTypes.has(t))].slice(0, 2);
+      lodgingHtml = `<div class="result-lodging">${picks.map(t => {
+        const icon = lodgingIcons[t] || '\u{1F3E8}';
+        const label = t.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        return `<span class="lodging-pill">${icon} ${label}</span>`;
+      }).join('')}</div>`;
+    }
+
+    // Trip breakdown
+    const flightCost = Math.round(d.flightCostTotal || 0);
+    const hotelCost = Math.round(d.hotelCostTotal || 0);
+    const expensesCost = Math.round(d.expensesCostTotal || 0);
+    const travelHrs = d.travelHours || 12;
+    const transitPct = Math.round((travelHrs * 2) / (state.nights * 24) * 100);
+    const transitColor = transitPct < 15 ? '#8fbc8f' : transitPct <= 25 ? '#d4a844' : '#c97a5a';
+    const overAmount = d.displayCost - budget;
+    const budgetLine = d.fits
+      ? `<span style="color:#8fbc8f">\u2713 within budget</span>`
+      : `<span style="color:#c97a5a">\u26A0 over by $${overAmount.toLocaleString()}</span>`;
+    const cardId = `breakdown-${i}`;
+
     return `
-    <a class="result-card" href="${d.bookUrl}" target="_blank" rel="noopener">
-      <span class="result-flag">${d.flag}</span>
-      <div class="result-body">
-        <div class="result-name">${d.name}</div>
-        <div class="result-why">${d.why}</div>
-        ${hopNote}
-        ${travelWarn}
-        <span class="result-cta">Search flights & hotels →</span>
+    <div class="result-card-wrap">
+      <a class="result-card" href="${d.bookUrl}" target="_blank" rel="noopener">
+        <span class="result-flag">${d.flag}</span>
+        <div class="result-body">
+          <div class="result-name">${d.name}</div>
+          <div class="result-why">${d.why}</div>
+          ${tierNote}
+          ${lodgingHtml}
+          ${hopNote}
+          ${travelWarn}
+          ${xmasNote}
+          <span class="result-cta">Search flights & hotels \u2192</span>
+        </div>
+        <div class="result-cost">
+          <div class="result-total">$${d.displayCost.toLocaleString()}</div>
+          <div class="result-nights">${totalPeople} people \u00b7 ${state.tripDays} days</div>
+          <div class="result-nights" style="color:${d.fits ? '#8fbc8f' : '#c97a5a'}">${d.fits ? '\u2713 within budget' : '\u26A0 slightly over'}</div>
+        </div>
+      </a>
+      <button class="breakdown-toggle" onclick="event.stopPropagation(); document.getElementById('${cardId}').classList.toggle('open'); this.textContent = document.getElementById('${cardId}').classList.contains('open') ? '\u25B2 Hide breakdown' : '\u25BC See breakdown';">\u25BC See breakdown</button>
+      <div class="breakdown-panel" id="${cardId}">
+        <div class="breakdown-row"><span>\u2708 Flights</span><span>$${flightCost.toLocaleString()}</span><span class="breakdown-detail">${Math.round(travelHrs)}hrs each way</span></div>
+        <div class="breakdown-row"><span>\u{1F3E8} Hotel</span><span>$${hotelCost.toLocaleString()}</span><span class="breakdown-detail">${state.nights} nights \u00b7 $${d.recommendedRate}/night \u00b7 ${tierLabels[d.recommendedTier] || 'Hotel'}</span></div>
+        <div class="breakdown-row"><span>\u{1F37D}\uFE0F Daily expenses</span><span>$${expensesCost.toLocaleString()}</span><span class="breakdown-detail">$${d.dailyExpensesPerPerson}/person/day</span></div>
+        <div class="breakdown-divider"></div>
+        <div class="breakdown-row breakdown-total"><span>Total</span><span>$${d.displayCost.toLocaleString()}</span><span class="breakdown-detail">${budgetLine}</span></div>
+        <div class="breakdown-transit" style="color:${transitColor}">You'll spend ~${transitPct}% of your trip in transit</div>
       </div>
-      <div class="result-cost">
-        <div class="result-total">$${d.displayCost.toLocaleString()}</div>
-        <div class="result-nights">${totalPeople} people · ${state.tripDays} days</div>
-        <div class="result-nights" style="color:${d.fits ? '#8fbc8f' : '#c97a5a'}">${d.fits ? '✓ within budget' : '⚠ slightly over'}</div>
-      </div>
-    </a>`;
+    </div>`;
   }).join('');
 }
 
