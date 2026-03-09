@@ -8,6 +8,243 @@ const { DOMESTIC_TOWNS, DOMESTIC_GATEWAYS, getTownsByGateway } = require('./dome
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// ── Airport coordinates for ZIP-to-airport distance calc ──
+const AIRPORT_COORDS = {
+  JFK: { lat: 40.6413, lng: -73.7781, name: 'New York JFK' },
+  EWR: { lat: 40.6895, lng: -74.1745, name: 'Newark' },
+  LGA: { lat: 40.7769, lng: -73.8740, name: 'New York LGA' },
+  PHL: { lat: 39.8721, lng: -75.2411, name: 'Philadelphia' },
+  BOS: { lat: 42.3656, lng: -71.0096, name: 'Boston' },
+  DCA: { lat: 38.8512, lng: -77.0402, name: 'Washington Reagan' },
+  IAD: { lat: 38.9531, lng: -77.4565, name: 'Washington Dulles' },
+  BWI: { lat: 39.1754, lng: -76.6684, name: 'Baltimore' },
+  CLT: { lat: 35.2140, lng: -80.9431, name: 'Charlotte' },
+  ATL: { lat: 33.6407, lng: -84.4277, name: 'Atlanta' },
+  MIA: { lat: 25.7959, lng: -80.2870, name: 'Miami' },
+  MCO: { lat: 28.4312, lng: -81.3081, name: 'Orlando' },
+  TPA: { lat: 27.9755, lng: -82.5332, name: 'Tampa' },
+  MSY: { lat: 29.9934, lng: -90.2580, name: 'New Orleans' },
+  ORD: { lat: 41.9742, lng: -87.9073, name: 'Chicago O\'Hare' },
+  DTW: { lat: 42.2124, lng: -83.3534, name: 'Detroit' },
+  MSP: { lat: 44.8848, lng: -93.2223, name: 'Minneapolis' },
+  DFW: { lat: 32.8998, lng: -97.0403, name: 'Dallas/Fort Worth' },
+  IAH: { lat: 29.9902, lng: -95.3368, name: 'Houston' },
+  AUS: { lat: 30.1975, lng: -97.6664, name: 'Austin' },
+  BNA: { lat: 36.1263, lng: -86.6774, name: 'Nashville' },
+  DEN: { lat: 39.8561, lng: -104.6737, name: 'Denver' },
+  PHX: { lat: 33.4373, lng: -112.0078, name: 'Phoenix' },
+  LAS: { lat: 36.0840, lng: -115.1537, name: 'Las Vegas' },
+  SLC: { lat: 40.7899, lng: -111.9791, name: 'Salt Lake City' },
+  LAX: { lat: 33.9416, lng: -118.4085, name: 'Los Angeles' },
+  SFO: { lat: 37.6213, lng: -122.3790, name: 'San Francisco' },
+  SEA: { lat: 47.4502, lng: -122.3088, name: 'Seattle' },
+  PDX: { lat: 45.5898, lng: -122.5951, name: 'Portland' },
+};
+
+// ── ZIP code → lat/lng lookup ──
+const ZIP_EXACT = {
+  // Northeast
+  '10001': { lat: 40.7484, lng: -73.9967 }, // NYC Manhattan
+  '10002': { lat: 40.7157, lng: -73.9863 },
+  '10016': { lat: 40.7459, lng: -73.9778 },
+  '10019': { lat: 40.7654, lng: -73.9855 },
+  '10036': { lat: 40.7590, lng: -73.9845 },
+  '10128': { lat: 40.7812, lng: -73.9530 },
+  '11201': { lat: 40.6934, lng: -73.9897 }, // Brooklyn
+  '11215': { lat: 40.6631, lng: -73.9864 },
+  '07102': { lat: 40.7357, lng: -74.1724 }, // Newark NJ
+  '07030': { lat: 40.7440, lng: -74.0324 }, // Hoboken
+  '08540': { lat: 40.3573, lng: -74.6672 }, // Princeton
+  '06510': { lat: 41.3082, lng: -72.9282 }, // New Haven
+  '19104': { lat: 39.9523, lng: -75.1936 }, // Philadelphia
+  '19103': { lat: 39.9527, lng: -75.1729 },
+  '19147': { lat: 39.9350, lng: -75.1568 },
+  '02101': { lat: 42.3601, lng: -71.0589 }, // Boston
+  '02139': { lat: 42.3653, lng: -71.1037 }, // Cambridge
+  '02215': { lat: 42.3467, lng: -71.1030 },
+  '06601': { lat: 41.1670, lng: -73.2048 }, // Bridgeport CT
+  '06901': { lat: 41.0534, lng: -73.5387 }, // Stamford CT
+  '20001': { lat: 38.9072, lng: -77.0369 }, // Washington DC
+  '20002': { lat: 38.9050, lng: -76.9913 },
+  '20036': { lat: 38.9076, lng: -77.0423 },
+  '22101': { lat: 38.9339, lng: -77.1773 }, // McLean VA
+  '21201': { lat: 39.2904, lng: -76.6122 }, // Baltimore
+  '21202': { lat: 39.2890, lng: -76.5998 },
+  '15213': { lat: 40.4444, lng: -79.9533 }, // Pittsburgh
+  '15222': { lat: 40.4486, lng: -80.0028 },
+  '14201': { lat: 42.8864, lng: -78.8784 }, // Buffalo
+  '10601': { lat: 41.0340, lng: -73.7629 }, // White Plains NY
+  '06880': { lat: 41.1175, lng: -73.3487 }, // Westport CT
+  // Southeast
+  '30301': { lat: 33.7490, lng: -84.3880 }, // Atlanta
+  '30308': { lat: 33.7715, lng: -84.3723 },
+  '30318': { lat: 33.7912, lng: -84.4195 },
+  '28202': { lat: 35.2271, lng: -80.8431 }, // Charlotte
+  '28205': { lat: 35.2227, lng: -80.8012 },
+  '27601': { lat: 35.7796, lng: -78.6382 }, // Raleigh
+  '33101': { lat: 25.7617, lng: -80.1918 }, // Miami
+  '33130': { lat: 25.7680, lng: -80.2040 },
+  '33139': { lat: 25.7841, lng: -80.1340 }, // Miami Beach
+  '33601': { lat: 27.9506, lng: -82.4572 }, // Tampa
+  '33602': { lat: 27.9536, lng: -82.4610 },
+  '32801': { lat: 28.5383, lng: -81.3792 }, // Orlando
+  '32803': { lat: 28.5563, lng: -81.3558 },
+  '33401': { lat: 26.7153, lng: -80.0534 }, // West Palm Beach
+  '32301': { lat: 30.4383, lng: -84.2807 }, // Tallahassee
+  '37201': { lat: 36.1627, lng: -86.7816 }, // Nashville
+  '37203': { lat: 36.1530, lng: -86.7984 },
+  '29401': { lat: 32.7765, lng: -79.9311 }, // Charleston SC
+  '70112': { lat: 29.9511, lng: -90.0715 }, // New Orleans
+  '70130': { lat: 29.9280, lng: -90.0884 },
+  // Midwest
+  '60601': { lat: 41.8819, lng: -87.6278 }, // Chicago
+  '60614': { lat: 41.9218, lng: -87.6484 },
+  '60657': { lat: 41.9400, lng: -87.6530 },
+  '48201': { lat: 42.3314, lng: -83.0458 }, // Detroit
+  '48226': { lat: 42.3294, lng: -83.0440 },
+  '55401': { lat: 44.9778, lng: -93.2650 }, // Minneapolis
+  '55403': { lat: 44.9709, lng: -93.2805 },
+  '53202': { lat: 43.0389, lng: -87.9065 }, // Milwaukee
+  '43215': { lat: 39.9612, lng: -83.0007 }, // Columbus OH
+  '46204': { lat: 39.7684, lng: -86.1581 }, // Indianapolis
+  '63101': { lat: 38.6270, lng: -90.1994 }, // St. Louis
+  '64105': { lat: 39.1037, lng: -94.5786 }, // Kansas City
+  '45202': { lat: 39.1031, lng: -84.5120 }, // Cincinnati
+  '44113': { lat: 41.4843, lng: -81.7028 }, // Cleveland
+  // Texas / South Central
+  '75201': { lat: 32.7890, lng: -96.7984 }, // Dallas
+  '75202': { lat: 32.7830, lng: -96.8004 },
+  '77001': { lat: 29.7544, lng: -95.3533 }, // Houston
+  '77002': { lat: 29.7556, lng: -95.3595 },
+  '78701': { lat: 30.2711, lng: -97.7437 }, // Austin
+  '78702': { lat: 30.2621, lng: -97.7222 },
+  '78201': { lat: 29.4603, lng: -98.5241 }, // San Antonio
+  '73301': { lat: 30.3265, lng: -97.7713 }, // Austin (alt)
+  // Mountain / West
+  '80202': { lat: 39.7392, lng: -104.9903 }, // Denver
+  '80204': { lat: 39.7350, lng: -105.0163 },
+  '85001': { lat: 33.4484, lng: -112.0740 }, // Phoenix
+  '85004': { lat: 33.4539, lng: -112.0693 },
+  '84101': { lat: 40.7608, lng: -111.8910 }, // Salt Lake City
+  '89101': { lat: 36.1699, lng: -115.1398 }, // Las Vegas
+  '89109': { lat: 36.1251, lng: -115.1685 }, // Las Vegas Strip
+  '87101': { lat: 35.0844, lng: -106.6504 }, // Albuquerque
+  '97201': { lat: 45.5051, lng: -122.6750 }, // Portland
+  '97209': { lat: 45.5317, lng: -122.6838 },
+  // Pacific
+  '90001': { lat: 33.9425, lng: -118.2551 }, // LA
+  '90010': { lat: 34.0614, lng: -118.3025 },
+  '90024': { lat: 34.0663, lng: -118.4310 }, // Westwood/UCLA
+  '90028': { lat: 34.0983, lng: -118.3267 }, // Hollywood
+  '90210': { lat: 34.0901, lng: -118.4065 }, // Beverly Hills
+  '90401': { lat: 34.0195, lng: -118.4912 }, // Santa Monica
+  '92101': { lat: 32.7197, lng: -117.1628 }, // San Diego
+  '94102': { lat: 37.7749, lng: -122.4194 }, // San Francisco
+  '94110': { lat: 37.7506, lng: -122.4155 },
+  '94158': { lat: 37.7700, lng: -122.3870 },
+  '98101': { lat: 47.6062, lng: -122.3321 }, // Seattle
+  '98103': { lat: 47.6714, lng: -122.3423 },
+  '98109': { lat: 47.6318, lng: -122.3476 },
+  '96801': { lat: 21.3069, lng: -157.8583 }, // Honolulu
+};
+
+// ZIP3 prefix → approximate region center (fallback when exact ZIP not found)
+const ZIP3_REGIONS = {
+  '006': { lat: 18.4655, lng: -66.1057 }, // Puerto Rico
+  '100': { lat: 40.7484, lng: -73.9967 }, // NYC
+  '101': { lat: 40.7900, lng: -73.9500 },
+  '102': { lat: 40.6500, lng: -73.9500 },
+  '103': { lat: 40.5800, lng: -74.1500 }, // Staten Island
+  '104': { lat: 40.8400, lng: -73.8700 }, // Bronx
+  '110': { lat: 40.7500, lng: -73.8700 }, // Queens
+  '112': { lat: 40.6500, lng: -73.9500 }, // Brooklyn
+  '070': { lat: 40.7300, lng: -74.1700 }, // Northern NJ
+  '071': { lat: 40.7200, lng: -74.0700 },
+  '080': { lat: 39.9500, lng: -74.8000 }, // Southern NJ
+  '085': { lat: 40.2200, lng: -74.7600 }, // Trenton NJ
+  '060': { lat: 41.7700, lng: -72.6800 }, // Hartford CT
+  '061': { lat: 41.3100, lng: -72.9200 }, // New Haven
+  '065': { lat: 41.0500, lng: -73.5400 }, // Stamford/Norwalk
+  '191': { lat: 39.9523, lng: -75.1936 }, // Philadelphia
+  '190': { lat: 40.0000, lng: -75.3000 }, // Philly suburbs
+  '021': { lat: 42.3601, lng: -71.0589 }, // Boston
+  '020': { lat: 42.0800, lng: -71.0200 }, // SE Massachusetts
+  '024': { lat: 42.4700, lng: -71.2800 }, // NW of Boston
+  '028': { lat: 41.8200, lng: -71.4100 }, // Providence RI
+  '200': { lat: 38.9072, lng: -77.0369 }, // Washington DC
+  '201': { lat: 38.8300, lng: -77.3000 }, // Northern VA
+  '210': { lat: 39.2904, lng: -76.6122 }, // Baltimore
+  '212': { lat: 39.4100, lng: -76.6000 },
+  '152': { lat: 40.4406, lng: -79.9959 }, // Pittsburgh
+  '303': { lat: 33.7490, lng: -84.3880 }, // Atlanta
+  '305': { lat: 33.8300, lng: -84.3200 },
+  '282': { lat: 35.2271, lng: -80.8431 }, // Charlotte
+  '276': { lat: 35.7796, lng: -78.6382 }, // Raleigh
+  '331': { lat: 25.7617, lng: -80.1918 }, // Miami
+  '330': { lat: 26.1224, lng: -80.1373 }, // Ft Lauderdale
+  '336': { lat: 27.9506, lng: -82.4572 }, // Tampa
+  '328': { lat: 28.5383, lng: -81.3792 }, // Orlando
+  '334': { lat: 26.7153, lng: -80.0534 }, // West Palm Beach
+  '327': { lat: 30.3322, lng: -81.6557 }, // Jacksonville
+  '372': { lat: 36.1627, lng: -86.7816 }, // Nashville
+  '606': { lat: 41.8819, lng: -87.6278 }, // Chicago
+  '600': { lat: 41.8500, lng: -87.7500 },
+  '482': { lat: 42.3314, lng: -83.0458 }, // Detroit
+  '554': { lat: 44.9778, lng: -93.2650 }, // Minneapolis
+  '432': { lat: 39.9612, lng: -83.0007 }, // Columbus OH
+  '462': { lat: 39.7684, lng: -86.1581 }, // Indianapolis
+  '631': { lat: 38.6270, lng: -90.1994 }, // St. Louis
+  '641': { lat: 39.0997, lng: -94.5786 }, // Kansas City
+  '452': { lat: 39.1031, lng: -84.5120 }, // Cincinnati
+  '441': { lat: 41.4843, lng: -81.7028 }, // Cleveland
+  '752': { lat: 32.7767, lng: -96.7970 }, // Dallas
+  '770': { lat: 29.7604, lng: -95.3698 }, // Houston
+  '787': { lat: 30.2672, lng: -97.7431 }, // Austin
+  '782': { lat: 29.4241, lng: -98.4936 }, // San Antonio
+  '802': { lat: 39.7392, lng: -104.9903 }, // Denver
+  '850': { lat: 33.4484, lng: -112.0740 }, // Phoenix
+  '841': { lat: 40.7608, lng: -111.8910 }, // Salt Lake City
+  '891': { lat: 36.1699, lng: -115.1398 }, // Las Vegas
+  '871': { lat: 35.0844, lng: -106.6504 }, // Albuquerque
+  '972': { lat: 45.5051, lng: -122.6750 }, // Portland OR
+  '900': { lat: 33.9425, lng: -118.2551 }, // Los Angeles
+  '902': { lat: 34.0500, lng: -118.4000 },
+  '904': { lat: 34.0195, lng: -118.4912 },
+  '921': { lat: 32.7197, lng: -117.1628 }, // San Diego
+  '941': { lat: 37.7749, lng: -122.4194 }, // San Francisco
+  '945': { lat: 37.8700, lng: -122.2700 }, // Oakland/Berkeley
+  '950': { lat: 37.3382, lng: -121.8863 }, // San Jose
+  '981': { lat: 47.6062, lng: -122.3321 }, // Seattle
+  '980': { lat: 47.2529, lng: -122.4443 }, // Tacoma
+  '968': { lat: 21.3069, lng: -157.8583 }, // Honolulu
+  '701': { lat: 29.9511, lng: -90.0715 }, // New Orleans
+  '294': { lat: 32.7765, lng: -79.9311 }, // Charleston SC
+};
+
+// Haversine distance in miles
+function haversineDistance(lat1, lng1, lat2, lng2) {
+  const R = 3959; // Earth radius in miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+// Approximate drive time in minutes (assumes ~45mph avg with metro traffic)
+function estimateDriveMin(distanceMiles) {
+  return Math.round(distanceMiles / 45 * 60);
+}
+
+// Resolve ZIP to lat/lng: try exact match, then ZIP3 prefix fallback
+function resolveZip(zip) {
+  if (ZIP_EXACT[zip]) return ZIP_EXACT[zip];
+  const prefix = zip.substring(0, 3);
+  if (ZIP3_REGIONS[prefix]) return ZIP3_REGIONS[prefix];
+  return null;
+}
+
 app.use(cors({
   origin: ['http://goelsewhere.travel', 'https://goelsewhere.travel', 'http://localhost:3000', 'http://localhost:3002']
 }));
@@ -460,6 +697,40 @@ function getDates(timing, nights) {
     return: ret.toISOString().split('T')[0]
   };
 }
+
+// ── /api/airports — find nearby airports from ZIP code ──
+app.get('/api/airports', (req, res) => {
+  const zip = (req.query.zip || '').trim();
+  if (!/^\d{5}$/.test(zip)) {
+    return res.status(400).json({ error: 'Please provide a 5-digit US ZIP code' });
+  }
+
+  const location = resolveZip(zip);
+  if (!location) {
+    return res.status(404).json({ error: 'ZIP code not recognized. Try a nearby major city ZIP.' });
+  }
+
+  const airports = [];
+  for (const [iata, info] of Object.entries(AIRPORT_COORDS)) {
+    const dist = haversineDistance(location.lat, location.lng, info.lat, info.lng);
+    if (dist <= 150) {
+      airports.push({
+        iata,
+        name: info.name,
+        distanceMiles: Math.round(dist),
+        driveMin: estimateDriveMin(dist),
+      });
+    }
+  }
+
+  airports.sort((a, b) => a.distanceMiles - b.distanceMiles);
+
+  res.json({
+    zip,
+    location: { lat: location.lat, lng: location.lng },
+    airports,
+  });
+});
 
 // ── /api/experiences ──
 app.get('/api/experiences', (req, res) => {

@@ -176,7 +176,7 @@
     line-height: 1.3;
   }
 
-  /* Origin dropdown */
+  /* Origin ZIP input */
   .origin-input {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -190,15 +190,40 @@
     transition: border-color 0.2s;
     margin-top: 0.5rem;
     box-sizing: border-box;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.5)' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    cursor: pointer;
   }
-  .origin-input option { background: #1a1a2e; color: #fff; }
   .origin-input:focus { border-color: rgba(255,255,255,0.5); }
+
+  /* Airport results list */
+  .airport-results {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .airport-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.4rem;
+    background: rgba(255,255,255,0.06);
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.92rem;
+  }
+  .airport-item:hover { background: rgba(255,255,255,0.12); }
+  .airport-item.selected { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); }
+  .airport-item input[type="checkbox"] {
+    accent-color: #8fbc8f;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+  .airport-code { font-weight: 600; color: #e0e0e0; min-width: 2.2rem; }
+  .airport-name { color: rgba(255,255,255,0.7); }
+  .airport-drive { margin-left: auto; color: rgba(255,255,255,0.45); font-size: 0.82rem; white-space: nowrap; }
+  .airport-error { color: #c97a5a; font-size: 0.85rem; margin-top: 0.5rem; }
+  .airport-loading { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 0.5rem; }
 
   /* Party counter */
   .party-grid {
@@ -542,26 +567,8 @@
       <div class="step active" id="step-1">
         <p class="step-label">Step 1 of 4</p>
         <p class="step-question">Where are you flying from?</p>
-        <select id="origin-val" class="origin-input" onchange="state.origin = this.value">
-          <option value="" disabled selected>Choose your airport</option>
-          <option value="JFK">New York – JFK</option>
-          <option value="EWR">Newark – EWR</option>
-          <option value="LGA">New York – LGA</option>
-          <option value="LAX">Los Angeles – LAX</option>
-          <option value="SFO">San Francisco – SFO</option>
-          <option value="ORD">Chicago – ORD</option>
-          <option value="MIA">Miami – MIA</option>
-          <option value="ATL">Atlanta – ATL</option>
-          <option value="BOS">Boston – BOS</option>
-          <option value="DCA">Washington – DCA</option>
-          <option value="IAD">Washington – IAD</option>
-          <option value="SEA">Seattle – SEA</option>
-          <option value="DEN">Denver – DEN</option>
-          <option value="DFW">Dallas – DFW</option>
-          <option value="IAH">Houston – IAH</option>
-          <option value="PHL">Philadelphia – PHL</option>
-          <option value="MCO">Orlando – MCO</option>
-        </select>
+        <input type="text" id="zip-input" class="origin-input" placeholder="Enter your zip code" maxlength="5" inputmode="numeric" autocomplete="postal-code">
+        <div id="airport-results"></div>
         <p class="step-question" style="margin-top:1.5rem">Who's coming?</p>
         <div class="party-grid">
           <div class="counter-row">
@@ -715,6 +722,75 @@ const state = {
   nights: 8, tripDays: 9, tripLength: '8-10',
   budget: null, timing: null, vibes: []
 };
+
+// ── ZIP → AIRPORT LOOKUP ──
+const zipInput = document.getElementById('zip-input');
+const airportResults = document.getElementById('airport-results');
+let lastZipFetched = '';
+
+function formatDriveTime(mins) {
+  if (mins < 60) return mins + ' min';
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m > 0 ? h + ' hr ' + m + ' min' : h + ' hr';
+}
+
+async function fetchAirports(zip) {
+  if (zip === lastZipFetched) return;
+  lastZipFetched = zip;
+  airportResults.innerHTML = '<div class="airport-loading">Finding nearby airports...</div>';
+  try {
+    const resp = await fetch('https://goelsewhere-production-608b.up.railway.app/api/airports?zip=' + zip);
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Lookup failed');
+    if (!data.airports || data.airports.length === 0) {
+      airportResults.innerHTML = '<div class="airport-error">No airports found within 150 miles. Try another zip.</div>';
+      state.origin = '';
+      return;
+    }
+    renderAirports(data.airports);
+  } catch (err) {
+    airportResults.innerHTML = '<div class="airport-error">' + err.message + '</div>';
+    state.origin = '';
+  }
+}
+
+function renderAirports(airports) {
+  airportResults.innerHTML = airports.map((a, i) => {
+    const checked = i === 0 ? 'checked' : '';
+    const selectedClass = i === 0 ? ' selected' : '';
+    return '<label class="airport-item' + selectedClass + '">' +
+      '<input type="checkbox" ' + checked + ' data-iata="' + a.iata + '" onchange="updateOriginFromAirports()">' +
+      '<span class="airport-code">' + a.iata + '</span>' +
+      '<span class="airport-name">' + a.name + '</span>' +
+      '<span class="airport-drive">' + formatDriveTime(a.driveMin) + '</span>' +
+    '</label>';
+  }).join('');
+  updateOriginFromAirports();
+}
+
+function updateOriginFromAirports() {
+  const checks = airportResults.querySelectorAll('input[type="checkbox"]');
+  checks.forEach(cb => {
+    cb.closest('.airport-item').classList.toggle('selected', cb.checked);
+  });
+  const checked = Array.from(checks).filter(cb => cb.checked);
+  state.origin = checked.length > 0 ? checked[0].dataset.iata : '';
+}
+
+zipInput.addEventListener('input', function() {
+  this.value = this.value.replace(/\D/g, '');
+  if (this.value.length === 5) {
+    fetchAirports(this.value);
+  }
+});
+
+zipInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && this.value.length === 5) {
+    fetchAirports(this.value);
+    this.blur();
+  }
+});
 
 // ── SLIDESHOW ──
 let currentSlide = 0;
@@ -962,7 +1038,9 @@ function resetAll() {
   state.budget = null; state.timing = null; state.vibes = [];
   document.querySelectorAll('.chip, .vibe-card, .trip-chip').forEach(el => el.classList.remove('selected'));
   document.querySelector('.trip-chip[data-length="8-10"]').classList.add('selected');
-  document.getElementById('origin-val').selectedIndex = 0;
+  document.getElementById('zip-input').value = '';
+  document.getElementById('airport-results').innerHTML = '';
+  lastZipFetched = '';
   document.getElementById('budget-val').value = '';
   ['adults','children','rooms'].forEach(k => {
     document.getElementById(k+'-val').textContent = state[k];
