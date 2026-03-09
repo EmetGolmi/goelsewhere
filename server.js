@@ -821,11 +821,8 @@ app.post('/api/flights', async (req, res) => {
   }
 });
 
-// ── /api/search — full trip search ──
-app.post('/api/search', async (req, res) => {
-  const { origin, budget, timing, adults, children, nights, rooms, vibes, genres, tripDays: rawTripDays } = req.body;
-
-  const destinations = [
+// ── Corridor destinations (module-level for reuse) ──
+const CORRIDORS = [
     // ── ULTRA-BUDGET ──
     { flag:'🇬🇹', name:'Antigua, Guatemala', why:'Cobblestone streets under three volcanoes, Spanish colonial churches, and $2 street food that rivals fine dining.', flightCostPerPerson:300, nightlyHotelRate:40, dailyExpensesPerPerson:30, tags:['City & Culture','Off the Map','Small Town Charm'], timing:['Winter Escape','Spring Break','Fall',"I'm Flexible"], genre:['city-historic','small-town-historic'] },
     { flag:'🇳🇮', name:'Granada, Nicaragua', why:'Candy-colored colonial city on a lake full of tiny volcanic islands. Central America\'s best-kept secret.', flightCostPerPerson:350, nightlyHotelRate:35, dailyExpensesPerPerson:25, tags:['City & Culture','Off the Map','Small Town Charm'], timing:['Winter Escape','Spring Break',"I'm Flexible"], genre:['city-historic','small-town-coastal'] },
@@ -933,7 +930,23 @@ app.post('/api/search', async (req, res) => {
     // ── LUXURY ──
     { flag:'🇲🇻', name:'Maldives', why:'Overwater villas, bioluminescent beaches, reef snorkeling from your room. The ultimate beach splurge.', flightCostPerPerson:1200, nightlyHotelRate:550, dailyExpensesPerPerson:100, tags:['Beach & Sun','Nature & Escape'], timing:['Winter Escape','Spring Break',"I'm Flexible"], genre:['beach-pacific','nature-coastal'] },
     { flag:'🇵🇫', name:'Bora Bora, French Polynesia', why:'Mount Otemanu, glass-floor bungalows, lagoon so blue it looks fake. The postcard destination that actually delivers.', flightCostPerPerson:1500, nightlyHotelRate:650, dailyExpensesPerPerson:120, tags:['Beach & Sun','Nature & Escape'], timing:['Summer','Winter Escape',"I'm Flexible"], genre:['beach-pacific','nature-coastal'] },
-  ];
+];
+
+// ── /api/destinations — full combined dataset for admin tool ──
+app.get('/api/destinations', (req, res) => {
+  const corridors = CORRIDORS.map(d => ({ ...d, source: 'corridor' }));
+  const xmasTowns = CHRISTMAS_TOWNS.map(d => ({ ...d, source: 'christmas-town' }));
+  const unesco = UNESCO_TIER2.map(d => ({ ...d, source: 'unesco-tier2' }));
+  const domestic = DOMESTIC_TOWNS.map(d => ({ ...d, source: 'domestic-town' }));
+  const all = [...corridors, ...xmasTowns, ...unesco, ...domestic];
+  res.json({ count: all.length, destinations: all });
+});
+
+// ── /api/search — full trip search ──
+app.post('/api/search', async (req, res) => {
+  const { origin, budget, timing, adults, children, nights, rooms, vibes, genres, tripDays: rawTripDays } = req.body;
+
+  const destinations = CORRIDORS;
 
   const totalAdults = parseInt(adults) || 2;
   const totalPeople = totalAdults + (parseInt(children) || 0);
