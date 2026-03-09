@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const Amadeus = require('amadeus');
+const { Duffel } = require('@duffel/api');
 const { ALL_EXPERIENCES } = require('./experiences');
 const { DOMESTIC_TOWNS, DOMESTIC_GATEWAYS, getTownsByGateway } = require('./domestic-towns');
 
@@ -253,12 +253,11 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static('.'));
 
-const amadeus = new Amadeus({
-  clientId: process.env.AMADEUS_API_KEY,
-  clientSecret: process.env.AMADEUS_API_SECRET
+const duffel = new Duffel({
+  token: process.env.DUFFEL_API_KEY,
 });
 
-// ── Live hotel pricing from Amadeus (enriched offline) ──
+// ── Live hotel pricing (enriched offline) ──
 let hotelData = {};
 try {
   hotelData = require('./hotel-data.json');
@@ -797,42 +796,41 @@ app.post('/api/flights', async (req, res) => {
   const totalAdults = Math.max(1, parseInt(adults) || 1);
 
   try {
-    const response = await amadeus.shopping.flightOffersSearch.get({
-      originLocationCode: originCode,
-      destinationLocationCode: destCode,
-      departureDate: dates.departure,
-      returnDate: dates.return,
-      adults: Math.min(totalAdults, 9), // Amadeus max 9
-      currencyCode: 'USD',
-      max: 3
+    const passengers = Array.from({ length: Math.min(totalAdults, 9) }, () => ({ type: 'adult' }));
+    const offerRequest = await duffel.offerRequests.create({
+      slices: [
+        { origin: originCode, destination: destCode, departure_date: dates.departure },
+        { origin: destCode, destination: originCode, departure_date: dates.return },
+      ],
+      passengers,
+      cabin_class: 'economy',
     });
 
-    const offers = response.data;
-    if (!offers || offers.length === 0) {
+    const offers = offerRequest.data?.offers || [];
+    if (offers.length === 0) {
       return res.json({ price: null, note: 'No flights found for this route' });
     }
 
-    // Return cheapest total price
     const cheapest = offers.reduce((min, o) =>
-      parseFloat(o.price.total) < parseFloat(min.price.total) ? o : min
+      parseFloat(o.total_amount) < parseFloat(min.total_amount) ? o : min
     );
 
     res.json({
-      price: parseFloat(cheapest.price.total),
-      currency: cheapest.price.currency,
+      price: parseFloat(cheapest.total_amount),
+      currency: cheapest.total_currency,
       origin: originCode,
       destination: destCode,
       departure: dates.departure,
       return: dates.return,
-      airline: cheapest.validatingAirlineCodes?.[0] || 'Various',
-      stops: cheapest.itineraries?.[0]?.segments?.length - 1 || 0
+      airline: cheapest.owner?.name || 'Various',
+      stops: (cheapest.slices?.[0]?.segments?.length || 1) - 1,
     });
 
   } catch (err) {
-    console.error('Amadeus error:', err?.response?.data || err.message);
+    console.error('Duffel error:', err?.errors || err.message);
     res.status(500).json({
       error: 'Flight search failed',
-      detail: err?.response?.data?.errors?.[0]?.detail || err.message
+      detail: err?.errors?.[0]?.message || err.message,
     });
   }
 });
@@ -1153,17 +1151,20 @@ app.post('/api/search', async (req, res) => {
     }
     try {
       const dates = getDates(timing, nightsNum);
-      const flightRes = await amadeus.shopping.flightOffersSearch.get({
-        originLocationCode: originCode,
-        destinationLocationCode: searchDestCode,
-        departureDate: dates.departure,
-        returnDate: dates.return,
-        adults: Math.min(totalPeople, 9),
-        currencyCode: 'USD',
-        max: 1
+      const passengers = Array.from({ length: Math.min(totalPeople, 9) }, () => ({ type: 'adult' }));
+      const offerReq = await duffel.offerRequests.create({
+        slices: [
+          { origin: originCode, destination: searchDestCode, departure_date: dates.departure },
+          { origin: searchDestCode, destination: originCode, departure_date: dates.return },
+        ],
+        passengers,
+        cabin_class: 'economy',
       });
-      const cheapest = flightRes.data?.[0];
-      const flightPrice = cheapest ? parseFloat(cheapest.price.total) : null;
+      const offers = offerReq.data?.offers || [];
+      const cheapest = offers.length > 0
+        ? offers.reduce((min, o) => parseFloat(o.total_amount) < parseFloat(min.total_amount) ? o : min)
+        : null;
+      const flightPrice = cheapest ? parseFloat(cheapest.total_amount) : null;
       // Add round-trip ground transport cost when using a hop route
       const totalFlightCost = (flightPrice && d.hopRoute)
         ? flightPrice + (d.hopRoute.groundCost * 2 * totalPeople)
