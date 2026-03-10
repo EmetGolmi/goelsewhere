@@ -946,6 +946,7 @@ app.get('/api/destinations', (req, res) => {
 
 // ── /api/search — full trip search ──
 app.post('/api/search', async (req, res) => {
+  try {
   const { origin, budget, timing, adults, children, nights, rooms, vibes, genres, tripDays: rawTripDays } = req.body;
 
   const destinations = MASTER_DESTINATIONS;
@@ -1125,7 +1126,7 @@ app.post('/api/search', async (req, res) => {
     const vibeMatches = vibesArr.filter(v => d.tags.includes(v)).length;
     score += vibeMatches * 20;
     if (vibesArr.length === 0) score += 10;
-    if (timing && d.timing.includes(timing)) score += 15;
+    if (timing && d.timing?.includes(timing)) score += 15;
     if (parseInt(children) > 0 && d.tags.includes('Family-First')) score += 15;
 
     // Travel time penalty based on trip length
@@ -1435,6 +1436,10 @@ app.post('/api/search', async (req, res) => {
   }));
 
   res.json({ results, origin: originCode, isWhiteChristmas });
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: 'Search failed', detail: err.message });
+  }
 });
 
 app.listen(PORT, () => {
