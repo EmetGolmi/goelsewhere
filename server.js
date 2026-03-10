@@ -202,6 +202,19 @@ const duffel = new Duffel({
   token: process.env.DUFFEL_API_KEY,
 });
 
+// ── Country → flag emoji for MASTER_DESTINATIONS display ──
+const COUNTRY_FLAGS = {
+  'Argentina':'🇦🇷','Australia':'🇦🇺','Belgium':'🇧🇪','Cambodia':'🇰🇭',
+  'Canada':'🇨🇦','Colombia':'🇨🇴','Croatia':'🇭🇷','Cuba':'🇨🇺',
+  'Czech Republic':'🇨🇿','Denmark':'🇩🇰','Dominican Republic':'🇩🇴',
+  'France':'🇫🇷','Germany':'🇩🇪','Iceland':'🇮🇸','Italy':'🇮🇹',
+  'Jamaica':'🇯🇲','Japan':'🇯🇵','Jordan':'🇯🇴','Laos':'🇱🇦',
+  'Mexico':'🇲🇽','Morocco':'🇲🇦','Myanmar':'🇲🇲','Netherlands':'🇳🇱',
+  'Peru':'🇵🇪','Portugal':'🇵🇹','Puerto Rico (US)':'🇵🇷',
+  'Spain':'🇪🇸','Tanzania':'🇹🇿','Turkey':'🇹🇷','US':'🇺🇸',
+  'Vietnam':'🇻🇳','Zimbabwe':'🇿🇼',
+};
+
 // ── Live hotel pricing (enriched offline) ──
 let hotelData = {};
 try {
@@ -1194,7 +1207,7 @@ app.post('/api/search', async (req, res) => {
     const hotelCostTotal = recommendedRate * nightsNum * roomsNum;
     const expensesCostTotal = d.dailyExpensesPerPerson * nightsNum * totalPeople;
 
-    return [{ ...d, score, estimatedCost, hopRoute, travelWarning, budgetWarning, nightsWarning, recommendedTier, recommendedRate, travelHours, flightCostTotal, hotelCostTotal, expensesCostTotal, unesco: d.unesco || false, unescoLabel, matchedGenre }];
+    return [{ ...d, flag: d.flag || COUNTRY_FLAGS[d.country] || '🌍', why: d.why || d.notableFor || '', score, estimatedCost, hopRoute, travelWarning, budgetWarning, nightsWarning, recommendedTier, recommendedRate, travelHours, flightCostTotal, hotelCostTotal, expensesCostTotal, unesco: d.unesco || false, unescoLabel, matchedGenre }];
   });
 
   // ── Domestic small towns (when "Small Town Charm" vibe selected) ──
