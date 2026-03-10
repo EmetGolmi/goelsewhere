@@ -1047,6 +1047,14 @@ app.post('/api/search', async (req, res) => {
     // Hard exclude filter (replaces the old snowProbability-only check)
     if (hardExclude(d)) return [];
 
+    // ── Normalize master-destinations schema ──
+    const gatewayIATA = d.gateway || destinationIATA[d.name];
+    const travelHrs = travelHoursMap[gatewayIATA] || 10;
+    const derivedFlightCost = d.flightCostPerPerson || Math.round(80 + travelHrs * 28);
+    const derivedDailyExp = d.dailyExpensesPerPerson || Math.round((d.nightlyHotelRateMid || 80) * 0.6);
+    const derivedHotelRate = d.nightlyHotelRate || d.nightlyHotelRateMid || 80;
+    d = { ...d, flightCostPerPerson: derivedFlightCost, dailyExpensesPerPerson: derivedDailyExp, nightlyHotelRate: derivedHotelRate, _iata: gatewayIATA };
+
     let score = 0;
 
     // Check if a gateway hop route is cheaper than a direct flight
@@ -1112,7 +1120,7 @@ app.post('/api/search', async (req, res) => {
     }
 
     // Route accessibility from origin (+15 nonstop, -5 connections only)
-    score += getRouteScore(originCode, destinationIATA[d.name]);
+    score += getRouteScore(originCode, d._iata || destinationIATA[d.name]);
 
     const vibeMatches = vibesArr.filter(v => d.tags.includes(v)).length;
     score += vibeMatches * 20;
@@ -1121,7 +1129,7 @@ app.post('/api/search', async (req, res) => {
     if (parseInt(children) > 0 && d.tags.includes('Family-First')) score += 15;
 
     // Travel time penalty based on trip length
-    const destIATA = destinationIATA[d.name];
+    const destIATA = d._iata || destinationIATA[d.name];
     let travelHours;
     if (hopRoute) {
       travelHours = (travelHoursMap[hopRoute.gatewayCode] || 10) + hopRoute.hours;
