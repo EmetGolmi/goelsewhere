@@ -8,6 +8,7 @@ const { WORLD_PARKS } = require('./world_parks_data');
 const { CHRISTMAS_TOWNS } = require('./christmas-towns.js');
 const { UNESCO_TIER2 } = require('./unesco-tier2.js');
 const zipcodes = require('zipcodes');
+const { MASTER_DESTINATIONS } = require('./master-destinations.js');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -938,7 +939,8 @@ app.get('/api/destinations', (req, res) => {
   const xmasTowns = CHRISTMAS_TOWNS.map(d => ({ ...d, source: 'christmas-town' }));
   const unesco = UNESCO_TIER2.map(d => ({ ...d, source: 'unesco-tier2' }));
   const domestic = DOMESTIC_TOWNS.map(d => ({ ...d, source: 'domestic-town' }));
-  const all = [...corridors, ...xmasTowns, ...unesco, ...domestic];
+  const master = MASTER_DESTINATIONS.map(d => ({ ...d, source: d.source?.[0] || 'master' }));
+  const all = [...master, ...corridors, ...xmasTowns, ...unesco, ...domestic];
   res.json({ count: all.length, destinations: all });
 });
 
@@ -946,7 +948,7 @@ app.get('/api/destinations', (req, res) => {
 app.post('/api/search', async (req, res) => {
   const { origin, budget, timing, adults, children, nights, rooms, vibes, genres, tripDays: rawTripDays } = req.body;
 
-  const destinations = CORRIDORS;
+  const destinations = MASTER_DESTINATIONS;
 
   const totalAdults = parseInt(adults) || 2;
   const totalPeople = totalAdults + (parseInt(children) || 0);
