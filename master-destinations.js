@@ -975,6 +975,7 @@ const MASTER_DESTINATIONS = [
     snowProbability: true, christmasVibe: 'city-christmas', unesco: true, unescoSite: 'Historic District of Old Québec',
     majorCity: false, domestic: false, trainTown: false,
     minNights: 3, maxNights: 7,
+    heritage: ['fr'],
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

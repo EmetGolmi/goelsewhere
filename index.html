@@ -120,6 +120,24 @@
     .foot{padding:22px 18px 36px}
   }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  /* ── location pill + override input ── */
+  button.loc{font-family:'Space Mono',monospace;background:none;cursor:pointer}
+  .loc:hover{border-color:var(--jade);background:rgba(30,122,107,.06)}
+  .loc-wrap{position:relative;display:inline-flex;align-items:center}
+  .loc-input-row{display:none;align-items:center;gap:6px;position:absolute;right:0;top:calc(100% + 6px);
+    z-index:20;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:8px 10px;box-shadow:0 8px 24px -8px rgba(43,34,48,.22);white-space:nowrap}
+  .loc-input-row.open{display:flex}
+  .loc-input{font-family:'Space Mono',monospace;font-size:12px;border:1px solid var(--line);
+    border-radius:6px;padding:5px 8px;background:#fff;color:var(--ink);outline:none;width:140px}
+  .loc-input:focus{border-color:var(--jade)}
+  .loc-go{font-size:12px;background:var(--jade);color:#fff;border:none;border-radius:6px;
+    padding:5px 10px;cursor:pointer;font-family:'Hanken Grotesk',sans-serif}
+  .loc-go:hover{background:#155f53}
+
+  @media(max-width:600px){
+    .loc-input-row{right:auto;left:0}
+  }
 </style>
 </head>
 <body>
@@ -130,7 +148,14 @@
     <nav class="topnav">
       <a class="navlink fly" href="/fly.html">Fly somewhere ✈</a>
       <a class="navlink about" href="#">About</a>
-      <span class="loc">📍 You're near <b>Philadelphia</b> · change</span>
+      <span class="loc-wrap">
+        <button class="loc" id="locPill" onclick="toggleLocInput()">📍 You're near <b id="locLabel">detecting…</b> · change</button>
+        <span class="loc-input-row" id="locInputRow">
+          <input class="loc-input" id="locInput" type="text" placeholder="City or ZIP" autocomplete="off"
+            onkeydown="if(event.key==='Enter')resolveLocInput()" />
+          <button class="loc-go" onclick="resolveLocInput()">Go</button>
+        </span>
+      </span>
     </nav>
   </header>
 
@@ -145,42 +170,42 @@
   </section>
 
   <div class="circles" id="circles">
-    <button class="circ primary" aria-label="See everything around you within an 18 kilometre radius">
-      <span class="small">See everything around me</span>
-      <span class="big">18 km</span>
-      <span class="small">≈ 11 mi radius</span>
+    <button class="circ primary" data-action="nearby" aria-label="Show everything nearby, sorted by distance">
+      <span class="small">Everything around me</span>
+      <span class="big" style="font-size:20px;line-height:1.15">Closest<br>first</span>
     </button>
 
-    <button class="circ" aria-label="See small towns around you">
+    <button class="circ" data-action="towns" aria-label="See small towns near you">
       <span class="emoji" aria-hidden="true">🏘️</span>
       <span class="clabel">Small towns</span>
     </button>
 
-    <button class="circ" aria-label="See unique and unusual places around you">
+    <button class="circ" data-action="experiences" aria-label="See unique experiences near you">
       <span class="emoji" aria-hidden="true">🤪</span>
       <span class="clabel">Unique stuff</span>
     </button>
 
-    <button class="circ" aria-label="See public parks around you">
+    <button class="circ" data-action="parks" aria-label="See parks near you">
       <span class="emoji" aria-hidden="true">🌳</span>
       <span class="clabel">Public parks</span>
     </button>
 
-    <button class="circ flagc" aria-label="See Mexican-American places around you"><span class="flagimg f-mx"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Brazilian-American places around you"><span class="flagimg f-br"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Argentine-American places around you"><span class="flagimg f-ar"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See English-American places around you"><span class="flagimg f-eng"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See French-American places around you"><span class="flagimg f-fr"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See German-American places around you"><span class="flagimg f-de"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Spanish-American places around you"><span class="flagimg f-es"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Portuguese-American places around you"><span class="flagimg f-pt"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Dutch-American places around you"><span class="flagimg f-nl"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Japanese-American places around you"><span class="flagimg f-jp"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Korean-American places around you"><span class="flagimg f-kr"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Colombian-American places around you"><span class="flagimg f-co"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Nigerian-American places around you"><span class="flagimg f-ng"></span><span class="liberty" aria-hidden="true">🗽</span></button>
-    <button class="circ flagc" aria-label="See Swedish-American places around you"><span class="flagimg f-se"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Mexico" aria-label="See Mexican-American places around you"><span class="flagimg f-mx"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Brazil" aria-label="See Brazilian-American places around you"><span class="flagimg f-br"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Argentina" aria-label="See Argentine-American places around you"><span class="flagimg f-ar"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="United Kingdom" aria-label="See English-American places around you"><span class="flagimg f-eng"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="France" aria-label="See French-American places around you"><span class="flagimg f-fr"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Germany" aria-label="See German-American places around you"><span class="flagimg f-de"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Spain" aria-label="See Spanish-American places around you"><span class="flagimg f-es"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Portugal" aria-label="See Portuguese-American places around you"><span class="flagimg f-pt"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Netherlands" aria-label="See Dutch-American places around you"><span class="flagimg f-nl"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Japan" aria-label="See Japanese-American places around you"><span class="flagimg f-jp"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="South Korea" aria-label="See Korean-American places around you"><span class="flagimg f-kr"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Colombia" aria-label="See Colombian-American places around you"><span class="flagimg f-co"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Nigeria" aria-label="See Nigerian-American places around you"><span class="flagimg f-ng"></span><span class="liberty" aria-hidden="true">🗽</span></button>
+    <button class="circ flagc" data-country="Sweden" aria-label="See Swedish-American places around you"><span class="flagimg f-se"></span><span class="liberty" aria-hidden="true">🗽</span></button>
   </div>
+
 
   <div class="joke">
     <div class="klabel">★ Public service announcement ★</div>
@@ -225,6 +250,119 @@
       setTimeout(function(){ gEl.textContent=greets[gi]; gEl.style.opacity=1; },240);
     },2100);
   }
+
+  /* ── A. Location detection ──────────────────────────────────────────────── */
+  var userLoc = null; // { lat, lng, label }
+
+  function setLoc(lat, lng, label) {
+    userLoc = { lat: lat, lng: lng, label: label };
+    var el = document.getElementById('locLabel');
+    if (el) el.textContent = label;
+  }
+
+  async function reverseGeocode(lat, lng) {
+    try {
+      var r = await fetch(
+        'https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json',
+        { headers: { 'Accept-Language': 'en' } }
+      );
+      var d = await r.json();
+      var a = d.address || {};
+      return a.city || a.town || a.village || a.county || 'your area';
+    } catch(e) { return 'your area'; }
+  }
+
+  async function ipGeoFallback() {
+    try {
+      var r = await fetch('https://ipapi.co/json/');
+      var d = await r.json();
+      if (d.latitude && d.longitude) {
+        setLoc(d.latitude, d.longitude, d.city || d.region || 'your area');
+        return;
+      }
+    } catch(e) {}
+    var el = document.getElementById('locLabel');
+    if (el) el.textContent = 'your area';
+  }
+
+  function detectLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async function(pos) {
+          var lat = pos.coords.latitude, lng = pos.coords.longitude;
+          var label = await reverseGeocode(lat, lng);
+          setLoc(lat, lng, label);
+        },
+        function() { ipGeoFallback(); },
+        { timeout: 6000, maximumAge: 300000 }
+      );
+    } else {
+      ipGeoFallback();
+    }
+  }
+
+  /* loc pill toggle */
+  function toggleLocInput() {
+    var row = document.getElementById('locInputRow');
+    var open = row.classList.toggle('open');
+    if (open) setTimeout(function(){ document.getElementById('locInput').focus(); }, 50);
+  }
+
+  async function resolveLocInput() {
+    var q = (document.getElementById('locInput').value || '').trim();
+    if (!q) return;
+    // ZIP → server-side resolution
+    if (/^\d{5}$/.test(q)) {
+      try {
+        var r = await fetch('/api/airports?zip='+q);
+        var d = await r.json();
+        if (d.location) {
+          setLoc(d.location.lat, d.location.lng, q);
+          document.getElementById('locInputRow').classList.remove('open');
+          document.getElementById('locInput').value = '';
+          return;
+        }
+      } catch(e) {}
+    }
+    // City name → Nominatim (US only)
+    try {
+      var r2 = await fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=1&countrycodes=us');
+      var d2 = await r2.json();
+      if (d2[0]) {
+        var name = d2[0].display_name.split(',')[0];
+        setLoc(parseFloat(d2[0].lat), parseFloat(d2[0].lon), name);
+        document.getElementById('locInputRow').classList.remove('open');
+        document.getElementById('locInput').value = '';
+        return;
+      }
+    } catch(e) {}
+    alert('Location not found. Try a US ZIP code or city name.');
+  }
+
+  /* wire circles → places.html */
+  document.querySelectorAll('#circles button').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var action = btn.dataset.action;
+
+      if (!action) {
+        // flag circle → heritage page
+        var country = btn.dataset.country;
+        var codeMap = {
+          'Mexico':'mx','Brazil':'br','Argentina':'ar','United Kingdom':'eng',
+          'France':'fr','Germany':'de','Spain':'es','Portugal':'pt',
+          'Netherlands':'nl','Japan':'jp','South Korea':'kr',
+          'Colombia':'co','Nigeria':'ng','Sweden':'se'
+        };
+        var code = codeMap[country];
+        if (code) window.location.href = '/places.html?category=heritage&country=' + code;
+        return;
+      }
+
+      window.location.href = '/places.html?category=' + encodeURIComponent(action);
+    });
+  });
+
+  detectLocation();
 </script>
 </body>
 </html>

@@ -186,6 +186,32 @@ function estimateDriveMin(distanceMiles) {
   return Math.round(distanceMiles / 45 * 60);
 }
 
+// ── Near-sort helpers ──────────────────────────────────────────────────────────
+// Parse near=lat,lng query param; returns {lat,lng} or null
+function parseNear(query) {
+  if (!query.near) return null;
+  const [lat, lng] = query.near.split(',').map(Number);
+  return (!isNaN(lat) && !isNaN(lng)) ? { lat, lng } : null;
+}
+
+function nearLimit(query, def = 20) {
+  return Math.min(parseInt(query.limit) || def, 50);
+}
+
+function nearMaxMiles(query, def = 150) {
+  return parseInt(query.maxMiles) || def;
+}
+
+// Sort items that have real lat/lng by distance, cap at maxMiles, slice to limit.
+// Adds distanceMiles field to each returned item.
+function applyNearSort(items, lat, lng, maxMiles, limit) {
+  return items
+    .map(item => ({ ...item, distanceMiles: Math.round(haversineDistance(lat, lng, item.lat, item.lng)) }))
+    .filter(item => item.distanceMiles <= maxMiles)
+    .sort((a, b) => a.distanceMiles - b.distanceMiles)
+    .slice(0, limit);
+}
+
 function resolveZip(zip) {
   const result = zipcodes.lookup(zip);
   if (!result) return null;
@@ -733,11 +759,46 @@ app.get('/api/airports', (req, res) => {
 
 // ── /api/experiences ──
 app.get('/api/experiences', (req, res) => {
+  const coords = parseNear(req.query);
+  if (coords) {
+    const { lat, lng } = coords;
+    const limit = nearLimit(req.query);
+    const maxMiles = nearMaxMiles(req.query);
+    const results = ALL_EXPERIENCES
+      .map(exp => {
+        const iata = Array.isArray(exp.gateway) ? exp.gateway[0] : exp.gateway;
+        const gw = AIRPORT_COORDS[iata];
+        const distanceMiles = gw ? Math.round(haversineDistance(lat, lng, gw.lat, gw.lng)) : null;
+        return { ...exp, distanceMiles };
+      })
+      .filter(e => e.distanceMiles !== null && e.distanceMiles <= maxMiles)
+      .sort((a, b) => a.distanceMiles - b.distanceMiles)
+      .slice(0, limit);
+    return res.json(results);
+  }
   res.json(ALL_EXPERIENCES);
 });
 
 // ── /api/towns ──
 app.get('/api/towns', (req, res) => {
+  const coords = parseNear(req.query);
+  if (coords) {
+    // Return a flat array sorted by distance to gateway airport (proxy for town location)
+    const { lat, lng } = coords;
+    const limit = nearLimit(req.query);
+    const maxMiles = nearMaxMiles(req.query);
+    const results = DOMESTIC_TOWNS
+      .map(town => {
+        const gw = AIRPORT_COORDS[town.iata];
+        const distanceMiles = gw ? Math.round(haversineDistance(lat, lng, gw.lat, gw.lng)) : null;
+        return { ...town, distanceMiles };
+      })
+      .filter(t => t.distanceMiles !== null && t.distanceMiles <= maxMiles)
+      .sort((a, b) => a.distanceMiles - b.distanceMiles)
+      .slice(0, limit);
+    return res.json(results);
+  }
+  // Default: grouped by gateway
   const grouped = {};
   for (const [iata, gw] of Object.entries(DOMESTIC_GATEWAYS)) {
     grouped[iata] = {
@@ -751,31 +812,120 @@ app.get('/api/towns', (req, res) => {
 // ── /api/parks ──
 app.get('/api/parks', (req, res) => {
   const { region, tag, gateway } = req.query;
+  const coords = parseNear(req.query);
   let parks = WORLD_PARKS;
   if (region) parks = parks.filter(p => p.region.toLowerCase().includes(region.toLowerCase()));
-  if (tag) parks = parks.filter(p => p.tags.some(t => t.toLowerCase().includes(tag.toLowerCase())));
+  if (tag)    parks = parks.filter(p => p.tags.some(t => t.toLowerCase().includes(tag.toLowerCase())));
   if (gateway) parks = parks.filter(p => p.gateway.toLowerCase().includes(gateway.toLowerCase()));
+  if (coords) {
+    parks = applyNearSort(parks, coords.lat, coords.lng, nearMaxMiles(req.query), nearLimit(req.query));
+  }
   res.json(parks);
 });
 
 // ── /api/christmas-towns ──
 app.get('/api/christmas-towns', (req, res) => {
   const { trainTown, snow, region, maxNightly } = req.query;
+  const coords = parseNear(req.query);
   let towns = [...CHRISTMAS_TOWNS];
   if (trainTown === 'true') towns = towns.filter(t => t.trainTown === true);
-  if (snow) towns = towns.filter(t => t.snowReliability === snow);
-  if (region) towns = towns.filter(t => t.region.toLowerCase().includes(region.toLowerCase()));
+  if (snow)       towns = towns.filter(t => t.snowReliability === snow);
+  if (region)     towns = towns.filter(t => t.region.toLowerCase().includes(region.toLowerCase()));
   if (maxNightly) towns = towns.filter(t => t.nightlyMid <= parseInt(maxNightly));
+  if (coords) {
+    towns = applyNearSort(towns, coords.lat, coords.lng, nearMaxMiles(req.query), nearLimit(req.query));
+  }
   res.json({ towns, total: towns.length });
 });
 
 // ── /api/unesco ──
 app.get('/api/unesco', (req, res) => {
   const { region, vibe } = req.query;
+  const coords = parseNear(req.query);
   let sites = UNESCO_TIER2.filter(s => !s.alreadyInCorridors);
   if (region) sites = sites.filter(s => s.region.toLowerCase().includes(region.toLowerCase()));
-  if (vibe) sites = sites.filter(s => s.vibes && s.vibes.includes(vibe));
+  if (vibe)   sites = sites.filter(s => s.vibes && s.vibes.includes(vibe));
+  if (coords) {
+    sites = applyNearSort(sites, coords.lat, coords.lng, nearMaxMiles(req.query), nearLimit(req.query));
+  }
   res.json({ sites, total: sites.length });
+});
+
+// ── /api/nearby — aggregate all collections sorted nearest-first ──
+// Uses MASTER_DESTINATIONS (real coords, deduplicated across all source lists)
+// plus WORLD_PARKS (natural parks, not in MASTER_DESTINATIONS).
+app.get('/api/nearby', (req, res) => {
+  const coords = parseNear(req.query);
+  if (!coords) return res.status(400).json({ error: 'near=lat,lng required' });
+  const limit = nearLimit(req.query);
+  const maxMiles = nearMaxMiles(req.query);
+  const { lat, lng } = coords;
+  const results = [];
+
+  for (const d of MASTER_DESTINATIONS) {
+    if (d.lat == null || d.lng == null) continue;
+    const dist = Math.round(haversineDistance(lat, lng, d.lat, d.lng));
+    if (dist > maxMiles) continue;
+    results.push({ ...d, distanceMiles: dist, collection: 'destination' });
+  }
+
+  for (const p of WORLD_PARKS) {
+    const dist = Math.round(haversineDistance(lat, lng, p.lat, p.lng));
+    if (dist > maxMiles) continue;
+    results.push({ ...p, distanceMiles: dist, collection: 'park' });
+  }
+
+  results.sort((a, b) => a.distanceMiles - b.distanceMiles);
+  res.json({ results: results.slice(0, limit), total: results.length });
+});
+
+// ── /api/heritage — places tagged with a heritage country code ──
+// Query: country=de  (required)  +  near=lat,lng  (optional, for distance sort)
+app.get('/api/heritage', (req, res) => {
+  const { country } = req.query;
+  if (!country) return res.status(400).json({ error: 'country= required' });
+  const hasHeritage = item => Array.isArray(item.heritage) && item.heritage.includes(country);
+  const coords = parseNear(req.query);
+  const maxMiles = nearMaxMiles(req.query);
+  const limit = nearLimit(req.query, 50);
+
+  let results = [];
+  for (const d of MASTER_DESTINATIONS) {
+    if (hasHeritage(d)) results.push({ ...d, _collection: 'destination' });
+  }
+  for (const p of WORLD_PARKS) {
+    if (hasHeritage(p)) results.push({ ...p, _collection: 'park' });
+  }
+  for (const t of CHRISTMAS_TOWNS) {
+    if (hasHeritage(t)) results.push({ ...t, _collection: 'christmas-town' });
+  }
+  for (const t of DOMESTIC_TOWNS) {
+    if (hasHeritage(t)) results.push({ ...t, _collection: 'town' });
+  }
+
+  if (coords) {
+    const { lat, lng } = coords;
+    results = results
+      .map(item => {
+        let itemLat = item.lat, itemLng = item.lng;
+        if ((itemLat == null || itemLng == null) && item.iata) {
+          const gw = AIRPORT_COORDS[item.iata];
+          if (gw) { itemLat = gw.lat; itemLng = gw.lng; }
+        }
+        const distanceMiles = (itemLat != null && itemLng != null)
+          ? Math.round(haversineDistance(lat, lng, itemLat, itemLng))
+          : null;
+        return { ...item, distanceMiles };
+      })
+      .filter(item => item.distanceMiles == null || item.distanceMiles <= maxMiles)
+      .sort((a, b) => {
+        if (a.distanceMiles == null) return 1;
+        if (b.distanceMiles == null) return -1;
+        return a.distanceMiles - b.distanceMiles;
+      });
+  }
+
+  res.json({ results: results.slice(0, limit), total: results.length });
 });
 
 // ── /api/flights ──

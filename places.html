@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Go Elsewhere — Places</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF4EA; --ink:#2B2230; --ink-soft:#5b5360;
+    --gold:#E0A02E; --jade:#1E7A6B; --poppy:#CE3B2B;
+    --line:rgba(43,34,48,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+  .stage{max-width:1180px;margin:0 auto}
+
+  /* ── Topbar ── */
+  .topbar{display:flex;align-items:center;gap:20px;padding:18px 40px;border-bottom:1px solid var(--line)}
+  .wordmark{font-family:'Fraunces',serif;font-weight:600;font-size:20px;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+  .wordmark span{color:var(--poppy)}
+  .topnav{margin-left:auto;display:flex;gap:22px;align-items:center;font-size:14px;color:var(--ink-soft)}
+  .topnav a{text-decoration:none;color:inherit}
+  .topnav a:hover{color:var(--ink)}
+  button.loc{font-family:'Space Mono',monospace;background:none;cursor:pointer}
+  .loc{font-family:'Space Mono',monospace;font-size:12px;color:var(--jade);border:1px solid var(--line);
+    border-radius:999px;padding:5px 12px;display:inline-flex;gap:6px;align-items:center}
+  .loc b{color:var(--ink);font-weight:700}
+  .loc:hover{border-color:var(--jade);background:rgba(30,122,107,.06)}
+  .loc-wrap{position:relative;display:inline-flex;align-items:center}
+  .loc-input-row{display:none;align-items:center;gap:6px;position:absolute;right:0;top:calc(100% + 6px);
+    z-index:20;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:8px 10px;box-shadow:0 8px 24px -8px rgba(43,34,48,.22);white-space:nowrap}
+  .loc-input-row.open{display:flex}
+  .loc-input{font-family:'Space Mono',monospace;font-size:12px;border:1px solid var(--line);
+    border-radius:6px;padding:5px 8px;background:#fff;color:var(--ink);outline:none;width:140px}
+  .loc-input:focus{border-color:var(--jade)}
+  .loc-go{font-size:12px;background:var(--jade);color:#fff;border:none;border-radius:6px;
+    padding:5px 10px;cursor:pointer;font-family:'Hanken Grotesk',sans-serif}
+
+  /* ── Page header ── */
+  .page-head{padding:36px 40px 20px}
+  .back-link{font-size:13px;color:var(--jade);text-decoration:none;font-family:'Space Mono',monospace;display:inline-flex;align-items:center;gap:5px;margin-bottom:16px}
+  .back-link:hover{text-decoration:underline}
+  .page-title{font-family:'Fraunces',serif;font-size:clamp(24px,4vw,38px);font-weight:600;letter-spacing:-.02em;margin:0 0 6px}
+  .page-meta{font-size:14px;color:var(--ink-soft);font-family:'Space Mono',monospace;min-height:20px}
+
+  /* ── Results grid ── */
+  .results-section{padding:0 40px 60px}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+
+  /* ── Card ── */
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;
+    display:flex;flex-direction:column;gap:10px;transition:box-shadow .15s,transform .1s}
+  .card:hover{box-shadow:0 8px 28px -8px rgba(43,34,48,.18);transform:translateY(-2px)}
+  .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .card-name{font-family:'Fraunces',serif;font-size:18px;font-weight:500;letter-spacing:-.01em;line-height:1.2;margin:0}
+  .card-dist{font-family:'Space Mono',monospace;font-size:11px;color:var(--jade);white-space:nowrap;flex-shrink:0;padding-top:3px}
+  .card-type{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-family:'Space Mono',monospace;
+    color:var(--ink-soft);background:rgba(43,34,48,.06);border-radius:6px;padding:3px 7px}
+  .card-loc{font-size:13px;color:var(--ink-soft)}
+  .card-desc{font-size:14px;line-height:1.55;color:var(--ink);margin:0;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+  .tag{font-size:11px;font-family:'Space Mono',monospace;background:rgba(224,160,46,.13);
+    color:#7a5800;border-radius:5px;padding:2px 6px}
+
+  /* ── Loading / empty states ── */
+  .state-block{padding:60px 40px;text-align:center}
+  .state-icon{font-size:48px;display:block;margin-bottom:16px}
+  .state-title{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:0 0 8px}
+  .state-body{font-size:15px;color:var(--ink-soft);max-width:420px;margin:0 auto}
+  .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--line);
+    border-top-color:var(--jade);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ── Responsive ── */
+  @media(max-width:640px){
+    .topbar{padding:14px 16px}
+    .page-head{padding:24px 16px 16px}
+    .results-section{padding:0 16px 40px}
+    .cards-grid{grid-template-columns:1fr}
+    .loc-input-row{right:auto;left:0}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ── Topbar ── -->
+  <header class="topbar">
+    <a class="wordmark" href="/">Go <span>Else</span>where</a>
+    <nav class="topnav">
+      <a href="/fly.html">Fly somewhere ✈</a>
+      <span class="loc-wrap">
+        <button class="loc" id="locPill" onclick="toggleLocInput()">📍 You're near <b id="locLabel">detecting…</b> · change</button>
+        <span class="loc-input-row" id="locInputRow">
+          <input class="loc-input" id="locInput" type="text" placeholder="City or ZIP" autocomplete="off"
+            onkeydown="if(event.key==='Enter')resolveLocInput()" />
+          <button class="loc-go" onclick="resolveLocInput()">Go</button>
+        </span>
+      </span>
+    </nav>
+  </header>
+
+  <!-- ── Page header ── -->
+  <div class="page-head">
+    <a class="back-link" href="/">← Back</a>
+    <h1 class="page-title" id="pageTitle">Places</h1>
+    <p class="page-meta" id="pageMeta"></p>
+  </div>
+
+  <!-- ── Content area ── -->
+  <div class="results-section" id="contentArea">
+    <div class="state-block">
+      <div class="spinner"></div>
+      <p class="state-title">Finding places…</p>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+<script>
+// ── Category config ────────────────────────────────────────────────────────
+const CATEGORY_CONFIG = {
+  nearby: {
+    title: 'Closest to you',
+    icon: '📍',
+    endpoint: '/api/nearby',
+    emptyTitle: 'Nothing nearby yet',
+    emptyBody: 'Try expanding your search radius or entering a different location.',
+  },
+  towns: {
+    title: 'Christmas towns',
+    icon: '🎄',
+    endpoint: '/api/christmas-towns',
+    emptyTitle: 'No towns found nearby',
+    emptyBody: 'Try a different location or browse all Christmas towns.',
+  },
+  parks: {
+    title: 'Parks & natural wonders',
+    icon: '🌲',
+    endpoint: '/api/parks',
+    emptyTitle: 'No parks found nearby',
+    emptyBody: 'Try expanding your search or browse all parks.',
+  },
+  experiences: {
+    title: 'Experiences',
+    icon: '✨',
+    endpoint: '/api/experiences',
+    emptyTitle: 'No experiences found nearby',
+    emptyBody: 'Try a different location or browse all experiences.',
+  },
+  heritage: {
+    title: null, // set dynamically per country
+    icon: null,
+    endpoint: '/api/heritage',
+    emptyTitle: 'Nothing tagged yet',
+    emptyBody: 'We\'re still building out heritage listings for this country. Check back soon.',
+  },
+};
+
+// ── Heritage metadata ──────────────────────────────────────────────────────
+const HERITAGE_META = {
+  mx: { flag: '🇲🇽', name: 'Mexico', adj: 'Mexican' },
+  br: { flag: '🇧🇷', name: 'Brazil', adj: 'Brazilian' },
+  ar: { flag: '🇦🇷', name: 'Argentina', adj: 'Argentine' },
+  eng: { flag: '🇬🇧', name: 'England', adj: 'English' },
+  fr: { flag: '🇫🇷', name: 'France', adj: 'French' },
+  de: { flag: '🇩🇪', name: 'Germany', adj: 'German' },
+  es: { flag: '🇪🇸', name: 'Spain', adj: 'Spanish' },
+  pt: { flag: '🇵🇹', name: 'Portugal', adj: 'Portuguese' },
+  nl: { flag: '🇳🇱', name: 'Netherlands', adj: 'Dutch' },
+  jp: { flag: '🇯🇵', name: 'Japan', adj: 'Japanese' },
+  kr: { flag: '🇰🇷', name: 'Korea', adj: 'Korean' },
+  co: { flag: '🇨🇴', name: 'Colombia', adj: 'Colombian' },
+  ng: { flag: '🇳🇬', name: 'Nigeria', adj: 'Nigerian' },
+  se: { flag: '🇸🇪', name: 'Sweden', adj: 'Swedish' },
+};
+
+// ── Collection type display ────────────────────────────────────────────────
+const TYPE_META = {
+  destination:     { icon: '🌍', label: 'destination' },
+  park:            { icon: '🌲', label: 'park' },
+  'christmas-town':{ icon: '🎄', label: 'christmas town' },
+  town:            { icon: '🏘', label: 'town' },
+  experience:      { icon: '✨', label: 'experience' },
+};
+
+// ── Location state ─────────────────────────────────────────────────────────
+var userLoc = null;
+
+function setLoc(lat, lng, label) {
+  userLoc = { lat, lng, label };
+  var el = document.getElementById('locLabel');
+  if (el) el.textContent = label;
+}
+
+async function reverseGeocode(lat, lng) {
+  try {
+    var r = await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json');
+    var d = await r.json();
+    return d.address && (d.address.city || d.address.town || d.address.village || d.address.county) || null;
+  } catch(e) { return null; }
+}
+
+async function ipGeoFallback() {
+  try {
+    var r = await fetch('https://ipapi.co/json/');
+    var d = await r.json();
+    if (d.latitude && d.longitude) {
+      setLoc(d.latitude, d.longitude, d.city || d.region || 'your area');
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+async function detectLocation() {
+  var cached = null;
+  try {
+    var c = sessionStorage.getItem('goElsewhereLoc');
+    if (c) cached = JSON.parse(c);
+  } catch(e) {}
+
+  if (cached) {
+    setLoc(cached.lat, cached.lng, cached.label);
+    return;
+  }
+
+  if ('geolocation' in navigator) {
+    try {
+      var pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject,
+          { timeout: 4000, maximumAge: 300000 });
+      });
+      var lat = pos.coords.latitude, lng = pos.coords.longitude;
+      var label = await reverseGeocode(lat, lng) || 'your area';
+      setLoc(lat, lng, label);
+      try { sessionStorage.setItem('goElsewhereLoc', JSON.stringify({ lat, lng, label })); } catch(e) {}
+      return;
+    } catch(e) {}
+  }
+
+  var ok = await ipGeoFallback();
+  if (!ok) {
+    var el = document.getElementById('locLabel');
+    if (el) el.textContent = 'your area';
+  }
+}
+
+function toggleLocInput() {
+  var row = document.getElementById('locInputRow');
+  if (!row) return;
+  row.classList.toggle('open');
+  if (row.classList.contains('open')) {
+    var inp = document.getElementById('locInput');
+    if (inp) { inp.value = ''; inp.focus(); }
+  }
+}
+
+async function resolveLocInput() {
+  var val = (document.getElementById('locInput') || {}).value || '';
+  val = val.trim();
+  if (!val) return;
+
+  // Try ZIP via server
+  try {
+    var r = await fetch('/api/zip?zip=' + encodeURIComponent(val));
+    if (r.ok) {
+      var d = await r.json();
+      if (d.lat) {
+        setLoc(d.lat, d.lng, d.city || val);
+        try { sessionStorage.setItem('goElsewhereLoc', JSON.stringify({ lat: d.lat, lng: d.lng, label: d.city || val })); } catch(e) {}
+        document.getElementById('locInputRow').classList.remove('open');
+        loadResults();
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // Try Nominatim for city name
+  try {
+    var r2 = await fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(val) + '&format=json&limit=1&countrycodes=us,ca');
+    var d2 = await r2.json();
+    if (d2 && d2[0]) {
+      var lat = parseFloat(d2[0].lat), lng = parseFloat(d2[0].lon);
+      var label = d2[0].display_name.split(',')[0];
+      setLoc(lat, lng, label);
+      try { sessionStorage.setItem('goElsewhereLoc', JSON.stringify({ lat, lng, label })); } catch(e) {}
+      document.getElementById('locInputRow').classList.remove('open');
+      loadResults();
+      return;
+    }
+  } catch(e) {}
+
+  var el = document.getElementById('locLabel');
+  if (el) el.textContent = val + ' (not found)';
+  document.getElementById('locInputRow').classList.remove('open');
+}
+
+// ── URL params ────────────────────────────────────────────────────────────
+function getParams() {
+  var p = new URLSearchParams(window.location.search);
+  return { category: p.get('category') || 'nearby', country: p.get('country') || null };
+}
+
+// ── Build endpoint URL ────────────────────────────────────────────────────
+function buildUrl(cfg, params) {
+  var url = cfg.endpoint + '?limit=40';
+  if (params.country) url += '&country=' + encodeURIComponent(params.country);
+  if (userLoc) url += '&near=' + userLoc.lat + ',' + userLoc.lng;
+  return url;
+}
+
+// ── Normalize results from different endpoint shapes ──────────────────────
+function normalizeResults(data) {
+  // /api/nearby → { results: [...] }
+  // /api/heritage → { results: [...] }
+  // /api/christmas-towns → { towns: [...] }
+  // /api/parks → { parks: [...] }
+  // /api/experiences → flat array or { experiences: [...] }
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.results)) return data.results;
+  if (Array.isArray(data.towns)) return data.towns;
+  if (Array.isArray(data.parks)) return data.parks;
+  if (Array.isArray(data.sites)) return data.sites;
+  if (Array.isArray(data.experiences)) return data.experiences;
+  // grouped object (towns by gateway) → flatten
+  if (typeof data === 'object') {
+    var flat = [];
+    for (var k in data) {
+      var v = data[k];
+      if (v && Array.isArray(v.towns)) flat.push(...v.towns);
+    }
+    if (flat.length) return flat;
+  }
+  return [];
+}
+
+// ── Guess collection type from item fields ────────────────────────────────
+function guessCollection(item) {
+  if (item._collection) return item._collection;
+  if (item.collection) return item.collection;
+  if (item.christmasVibe) return 'christmas-town';
+  if (item.region && item.gateway && !item.iata) return 'park';
+  if (item.iata && item.domestic) return 'town';
+  if (item.category) return 'experience';
+  return 'destination';
+}
+
+// ── Render a single card ──────────────────────────────────────────────────
+function renderCard(item) {
+  var coll = guessCollection(item);
+  var tm = TYPE_META[coll] || { icon: '📍', label: 'place' };
+  var distHtml = item.distanceMiles != null
+    ? '<span class="card-dist">' + item.distanceMiles + ' mi</span>'
+    : '';
+  var name = item.name || '—';
+  var desc = item.notes || item.notableFor || item.why || item.tagline || '';
+  if (desc.length > 200) desc = desc.slice(0, 197) + '…';
+  var loc = '';
+  if (item.state && item.country === 'US') loc = item.state;
+  else if (item.state) loc = item.state + ', ' + item.country;
+  else if (item.country) loc = item.country;
+  else if (item.region) loc = item.region;
+  var tagsHtml = '';
+  if (Array.isArray(item.tags) && item.tags.length) {
+    var shown = item.tags.slice(0, 4);
+    tagsHtml = '<div class="card-tags">' + shown.map(t => '<span class="tag">' + t + '</span>').join('') + '</div>';
+  }
+  return '<div class="card">' +
+    '<div class="card-top">' +
+      '<h2 class="card-name">' + esc(name) + '</h2>' +
+      distHtml +
+    '</div>' +
+    '<span class="card-type">' + tm.icon + ' ' + tm.label + '</span>' +
+    (loc ? '<div class="card-loc">' + esc(loc) + '</div>' : '') +
+    (desc ? '<p class="card-desc">' + esc(desc) + '</p>' : '') +
+    tagsHtml +
+  '</div>';
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Render page header ────────────────────────────────────────────────────
+function setPageHeader(cfg, params, count) {
+  var title, icon;
+  if (params.category === 'heritage' && params.country) {
+    var hm = HERITAGE_META[params.country];
+    icon = hm ? hm.flag : '🌍';
+    title = hm ? hm.adj + ' heritage' : 'Heritage';
+    document.title = 'Go Elsewhere — ' + title;
+  } else {
+    icon = cfg.icon;
+    title = cfg.title;
+    document.title = 'Go Elsewhere — ' + title;
+  }
+  document.getElementById('pageTitle').textContent = icon + ' ' + title;
+  if (count != null) {
+    var metaStr = count + (count === 1 ? ' place' : ' places');
+    if (userLoc) metaStr += ' sorted nearest to ' + userLoc.label;
+    document.getElementById('pageMeta').textContent = metaStr;
+  }
+}
+
+// ── Load and render results ───────────────────────────────────────────────
+async function loadResults() {
+  var params = getParams();
+  var cfg = CATEGORY_CONFIG[params.category];
+  if (!cfg) {
+    document.getElementById('contentArea').innerHTML =
+      '<div class="state-block"><span class="state-icon">🤷</span>' +
+      '<p class="state-title">Unknown category</p></div>';
+    return;
+  }
+
+  // Update title before loading
+  setPageHeader(cfg, params, null);
+
+  // Show spinner
+  document.getElementById('contentArea').innerHTML =
+    '<div class="state-block"><div class="spinner"></div><p class="state-title">Loading…</p></div>';
+
+  try {
+    var url = buildUrl(cfg, params);
+    var r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var data = await r.json();
+    var items = normalizeResults(data);
+
+    setPageHeader(cfg, params, items.length);
+
+    if (!items.length) {
+      var emptyTitle = cfg.emptyTitle;
+      var emptyBody = cfg.emptyBody;
+      if (params.category === 'heritage' && params.country) {
+        var hm = HERITAGE_META[params.country];
+        if (hm) emptyBody = 'We\'re still building out ' + hm.adj + '-heritage listings. Check back soon.';
+      }
+      document.getElementById('contentArea').innerHTML =
+        '<div class="state-block"><span class="state-icon">🌿</span>' +
+        '<p class="state-title">' + esc(emptyTitle) + '</p>' +
+        '<p class="state-body">' + esc(emptyBody) + '</p></div>';
+      return;
+    }
+
+    var html = '<div class="cards-grid">' + items.map(renderCard).join('') + '</div>';
+    document.getElementById('contentArea').innerHTML = html;
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('contentArea').innerHTML =
+      '<div class="state-block"><span class="state-icon">⚠️</span>' +
+      '<p class="state-title">Couldn\'t load places</p>' +
+      '<p class="state-body">Check your connection and try again.</p></div>';
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+(async function init() {
+  await detectLocation();
+  await loadResults();
+})();
+</script>
+</body>
+</html>

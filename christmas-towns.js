@@ -129,6 +129,7 @@ module.exports.CHRISTMAS_TOWNS = [
     nightlyMid: 200,
     genre: ['small-town-arts', 'small-town-christmas'],
     christmasVibe: 'small-town-christmas',
+    heritage: ['es'],
   },
 
   {
@@ -203,6 +204,7 @@ module.exports.CHRISTMAS_TOWNS = [
     nightlyMid: 200,
     genre: ['small-town-christmas'],
     christmasVibe: 'small-town-christmas',
+    heritage: ['de'],
   },
 
   {
@@ -643,6 +645,7 @@ module.exports.CHRISTMAS_TOWNS = [
     nightlyMid: 190,
     genre: ['small-town-coastal', 'small-town-christmas'],
     christmasVibe: 'small-town-christmas',
+    heritage: ['eng'],
   },
 
 ];
