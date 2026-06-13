@@ -135,11 +135,12 @@ const CATEGORY_CONFIG = {
     emptyBody: 'Try expanding your search radius or entering a different location.',
   },
   towns: {
-    title: 'Christmas towns',
-    icon: '🎄',
-    endpoint: '/api/christmas-towns',
-    emptyTitle: 'No towns found nearby',
-    emptyBody: 'Try a different location or browse all Christmas towns.',
+    title: 'Small towns',
+    icon: '🏘',
+    endpoint: '/api/towns',
+    limit: 50,
+    emptyTitle: 'No small towns found nearby',
+    emptyBody: 'Try a different location or check your connection.',
   },
   parks: {
     title: 'Parks & natural wonders',
@@ -311,7 +312,7 @@ function getParams() {
 
 // ── Build endpoint URL ────────────────────────────────────────────────────
 function buildUrl(cfg, params) {
-  var url = cfg.endpoint + '?limit=40';
+  var url = cfg.endpoint + '?limit=' + (cfg.limit || 40);
   if (params.country) url += '&country=' + encodeURIComponent(params.country);
   if (userLoc) url += '&near=' + userLoc.lat + ',' + userLoc.lng;
   return url;
