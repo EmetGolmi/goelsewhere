@@ -149,9 +149,9 @@
   .ge-mapwidget__tab:hover{color:var(--jade)}
   .ge-mapwidget__tab.is-active{color:var(--jade);border-bottom-color:var(--jade)}
   .ge-mapwidget__tab--soon{font-style:italic;opacity:.55}
-  .ge-mapwidget__iframe{width:100%;height:380px;border:none;display:block}
+  .ge-mapwidget__iframe{width:100%;height:calc(100svh - 220px);min-height:380px;border:none;display:block}
   .ge-mapwidget__soon{display:none;align-items:center;justify-content:center;
-    height:380px;border:1.5px dashed var(--line);border-top:none;background:var(--paper)}
+    height:calc(100svh - 220px);min-height:380px;border:1.5px dashed var(--line);border-top:none;background:var(--paper)}
   .ge-mapwidget__soon.is-visible{display:flex}
   .ge-mapwidget__soon-inner{text-align:center;padding:24px}
   .ge-mapwidget__soon-star{font-size:18px;color:var(--gold);display:block;
