@@ -522,7 +522,7 @@ const MASTER_DESTINATIONS = [
     nightlyHotelRateMid: 70, flightHours: 4, flightHoursWest: 3,
     tags: ['El-Chepe','train-journey','canyon','Rarámuri','Tarahumara','deeper-than-Grand-Canyon','pine-forest','Chihuahua'],
     experiences: ['el-chepe-train','canyon-rim-hike','rarámuri-village-visit','zip-line-canyon','Batopilas-descent'],
-    notableFor: 'System of 7 canyons deeper than the Grand Canyon — El Chepe train is one of the world's great rail journeys',
+    notableFor: 'System of 7 canyons deeper than the Grand Canyon — El Chepe train is one of the world\'s great rail journeys',
     snowProbability: true, christmasVibe: null, unesco: false,
     majorCity: false, domestic: false, trainTown: true, minNights: 4, maxNights: 10 },
 
@@ -861,7 +861,7 @@ const MASTER_DESTINATIONS = [
     nightlyHotelRateMid: 200, flightHours: 1.5, flightHoursWest: 6,
     tags: ['Marginal-Way','barrier-beach','artists-colony','LGBTQ','Perkins-Cove','Maine','lobster','classic-New-England'],
     experiences: ['Marginal-Way-cliff-walk','Perkins-Cove-dining','Ogunquit-Beach','art-museum','lobster-pound'],
-    notableFor: 'Three miles of barrier beach + Marginal Way cliff walk — one of New England's most complete small beach towns',
+    notableFor: "Three miles of barrier beach + Marginal Way cliff walk — one of New England's most complete small beach towns",
     snowProbability: true, christmasVibe: null, unesco: false,
     majorCity: false, domestic: true, trainTown: false, minNights: 2, maxNights: 5 },
 
@@ -1043,7 +1043,7 @@ const MASTER_DESTINATIONS = [
     nightlyHotelRateMid: 140, flightHours: 1.5, flightHoursWest: 5.5,
     tags: ['Low-Country','antebellum','Spanish-moss','tidal-marshes','Hunting-Island','Sea-Islands','South-Carolina'],
     experiences: ['Hunting-Island-beach','antebellum-architecture-tour','kayaking-marshes','Gullah-culture','Port-Royal-day-trip'],
-    notableFor: 'Low Country antebellum town — Hunting Island State Park has the East Coast's most beautiful undeveloped beach',
+    notableFor: "Low Country antebellum town — Hunting Island State Park has the East Coast's most beautiful undeveloped beach",
     snowProbability: false, christmasVibe: null, unesco: false,
     majorCity: false, domestic: true, trainTown: false, minNights: 2, maxNights: 5 },
 
@@ -1056,7 +1056,7 @@ const MASTER_DESTINATIONS = [
     nightlyHotelRateMid: 150, flightHours: 1.5, flightHoursWest: 5.5,
     tags: ['Amelia-Island','Victorian-architecture','shrimping','Florida-historic','wide-beach','uncrowded','lighthouse'],
     experiences: ['Amelia-Island-beach','Victorian-downtown-walk','shrimping-history-tour','Fort-Clinch','kayaking'],
-    notableFor: 'Victorian beach town at Florida's northern tip — wide quiet beaches, shrimping heritage, antique downtown',
+    notableFor: "Victorian beach town at Florida's northern tip — wide quiet beaches, shrimping heritage, antique downtown",
     snowProbability: false, christmasVibe: null, unesco: false,
     majorCity: false, domestic: true, trainTown: false, minNights: 2, maxNights: 5 },
 
