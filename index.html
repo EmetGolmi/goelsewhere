@@ -138,7 +138,34 @@
   @media(max-width:600px){
     .loc-input-row{right:auto;left:0}
   }
-</style>
+
+  /* ── Map widget ─────────────────────────────── */
+  .ge-mapwidget{padding:28px 40px 36px;border-bottom:1px solid var(--line)}
+  .ge-mapwidget__tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+  .ge-mapwidget__tab{font-family:'Fraunces',serif;font-weight:600;font-size:15px;
+    color:var(--ink-soft);background:none;border:none;border-bottom:3px solid transparent;
+    padding:10px 18px;min-height:44px;cursor:pointer;transition:color .18s,border-color .18s;
+    margin-bottom:-1px;line-height:1.25}
+  .ge-mapwidget__tab:hover{color:var(--jade)}
+  .ge-mapwidget__tab.is-active{color:var(--jade);border-bottom-color:var(--jade)}
+  .ge-mapwidget__tab--soon{font-style:italic;opacity:.55}
+  .ge-mapwidget__iframe{width:100%;height:380px;border:none;display:block}
+  .ge-mapwidget__soon{display:none;align-items:center;justify-content:center;
+    height:380px;border:1.5px dashed var(--line);border-top:none;background:var(--paper)}
+  .ge-mapwidget__soon.is-visible{display:flex}
+  .ge-mapwidget__soon-inner{text-align:center;padding:24px}
+  .ge-mapwidget__soon-star{font-size:18px;color:var(--gold);display:block;
+    margin-bottom:14px;letter-spacing:.25em}
+  .ge-mapwidget__soon-msg{font-family:'Fraunces',serif;font-size:24px;
+    font-weight:600;color:var(--ink-soft)}
+  .ge-mapwidget__soon-sub{font-family:'Space Mono',monospace;font-size:11px;
+    color:var(--ink-soft);opacity:.65;letter-spacing:.1em;text-transform:uppercase;margin-top:10px}
+  @media(min-width:640px){
+    .ge-mapwidget__iframe,.ge-mapwidget__soon{height:460px}}
+  @media(max-width:760px){
+    .ge-mapwidget{padding:20px 16px 28px}
+    .ge-mapwidget__tab{font-size:14px;padding:10px 14px}}
+  </style>
 </head>
 <body>
 <div class="stage">
@@ -168,6 +195,55 @@
 
     <p class="sub">Thank you for coming to celebrate the World Cup. Your presence honors us on our nation's <span class="pop">semiquincentennial</span>. This country of ours is vast, its landscapes as diverse and beautiful as its population, with a fully loaded semi-automatic spice cabinet bursting with flavor profiles you've never experienced. Have fun, be safe, and don't forget to book a triple-bypass before you leave! Oh, and if you're driving, turn on "avoid highways" and let the good times roll.</p>
   </section>
+
+  <section class="ge-mapwidget" aria-label="Thematic maps">
+    <div class="ge-mapwidget__tabs" role="tablist" aria-label="Select a thematic map">
+      <button class="ge-mapwidget__tab is-active" role="tab" aria-selected="true"
+        data-mid="1sTIz5dybaNXq8tcm3Eb5vyCfYdV6KSE" data-live="true">Japanese America</button>
+      <button class="ge-mapwidget__tab" role="tab" aria-selected="false"
+        data-mid="1cwZvLin3CmZPcRXT-OcL6bnAXN5a_aU" data-live="true">German America</button>
+      <button class="ge-mapwidget__tab ge-mapwidget__tab--soon" role="tab" aria-selected="false"
+        data-live="false">Parks &amp; Rec</button>
+      <button class="ge-mapwidget__tab ge-mapwidget__tab--soon" role="tab" aria-selected="false"
+        data-live="false">Main Street USA</button>
+      <button class="ge-mapwidget__tab ge-mapwidget__tab--soon" role="tab" aria-selected="false"
+        data-live="false">Beach Towns</button>
+    </div>
+    <iframe class="ge-mapwidget__iframe" id="ge-map-iframe"
+      src="https://www.google.com/maps/d/embed?mid=1sTIz5dybaNXq8tcm3Eb5vyCfYdV6KSE&ehbc=2E312F"
+      allowfullscreen loading="lazy" title="Thematic map"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="ge-mapwidget__soon" id="ge-map-soon">
+      <div class="ge-mapwidget__soon-inner">
+        <span class="ge-mapwidget__soon-star">✦ ✦ ✦</span>
+        <p class="ge-mapwidget__soon-msg">Coming soon</p>
+        <p class="ge-mapwidget__soon-sub">More maps on the way</p>
+      </div>
+    </div>
+  </section>
+  <script>
+  (function(){
+    var tabs=document.querySelectorAll('.ge-mapwidget__tab');
+    var iframe=document.getElementById('ge-map-iframe');
+    var soon=document.getElementById('ge-map-soon');
+    tabs.forEach(function(tab){
+      tab.addEventListener('click',function(){
+        tabs.forEach(function(t){t.classList.remove('is-active');t.setAttribute('aria-selected','false');});
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected','true');
+        if(tab.dataset.live==='true'){
+          iframe.src='https://www.google.com/maps/d/embed?mid='+tab.dataset.mid+'&ehbc=2E312F';
+          iframe.style.display='';
+          soon.classList.remove('is-visible');
+        } else {
+          iframe.style.display='none';
+          soon.classList.add('is-visible');
+        }
+      });
+    });
+  })();
+  </script>
+
 
   <div class="circles" id="circles">
     <button class="circ primary" data-action="nearby" aria-label="Show everything nearby, sorted by distance">
