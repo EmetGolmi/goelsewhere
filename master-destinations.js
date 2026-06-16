@@ -522,7 +522,7 @@ const MASTER_DESTINATIONS = [
     nightlyHotelRateMid: 70, flightHours: 4, flightHoursWest: 3,
     tags: ['El-Chepe','train-journey','canyon','Rarámuri','Tarahumara','deeper-than-Grand-Canyon','pine-forest','Chihuahua'],
     experiences: ['el-chepe-train','canyon-rim-hike','rarámuri-village-visit','zip-line-canyon','Batopilas-descent'],
-    notableFor: 'System of 7 canyons deeper than the Grand Canyon — El Chepe train is one of the world\'s great rail journeys',
+    notableFor: "System of 7 canyons deeper than the Grand Canyon — El Chepe train is one of the world's great rail journeys",
     snowProbability: true, christmasVibe: null, unesco: false,
     majorCity: false, domestic: false, trainTown: true, minNights: 4, maxNights: 10 },
 
