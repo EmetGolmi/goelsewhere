@@ -467,6 +467,16 @@ async function loadResults() {
 
 // ── Init ──────────────────────────────────────────────────────────────────
 (async function init() {
+  var _near = new URLSearchParams(window.location.search).get('near');
+  if (_near) {
+    var _p = _near.split(',').map(Number);
+    if (_p.length === 2 && !isNaN(_p[0]) && !isNaN(_p[1])) {
+      setLoc(_p[0], _p[1], 'your area');
+      detectLocation(); // runs in background to resolve city label
+      await loadResults();
+      return;
+    }
+  }
   await detectLocation();
   await loadResults();
 })();

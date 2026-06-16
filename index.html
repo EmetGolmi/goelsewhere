@@ -427,6 +427,7 @@
   document.querySelectorAll('#circles button').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var action = btn.dataset.action;
+      var near = window.userLoc ? '&near=' + window.userLoc.lat + ',' + window.userLoc.lng : '';
 
       if (!action) {
         // flag circle → heritage page
@@ -438,11 +439,11 @@
           'Colombia':'co','Nigeria':'ng','Sweden':'se'
         };
         var code = codeMap[country];
-        if (code) window.location.href = '/places.html?category=heritage&country=' + code;
+        if (code) window.location.href = '/places.html?category=heritage&country=' + code + near;
         return;
       }
 
-      window.location.href = '/places.html?category=' + encodeURIComponent(action);
+      window.location.href = '/places.html?category=' + encodeURIComponent(action) + near;
     });
   });
 
