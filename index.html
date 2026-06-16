@@ -226,13 +226,27 @@
     var tabs=document.querySelectorAll('.ge-mapwidget__tab');
     var iframe=document.getElementById('ge-map-iframe');
     var soon=document.getElementById('ge-map-soon');
+
+    function mapUrl(mid){
+      var url='https://www.google.com/maps/d/embed?mid='+mid+'&ehbc=2E312F';
+      if(window.userLoc) url+='&ll='+window.userLoc.lat+','+window.userLoc.lng;
+      return url;
+    }
+
+    // Called by setLoc when location resolves
+    window._geMapSetLL=function(lat,lng){
+      var active=document.querySelector('.ge-mapwidget__tab.is-active');
+      if(!active||active.dataset.live!=='true') return;
+      iframe.src=mapUrl(active.dataset.mid);
+    };
+
     tabs.forEach(function(tab){
       tab.addEventListener('click',function(){
         tabs.forEach(function(t){t.classList.remove('is-active');t.setAttribute('aria-selected','false');});
         tab.classList.add('is-active');
         tab.setAttribute('aria-selected','true');
         if(tab.dataset.live==='true'){
-          iframe.src='https://www.google.com/maps/d/embed?mid='+tab.dataset.mid+'&ehbc=2E312F';
+          iframe.src=mapUrl(tab.dataset.mid);
           iframe.style.display='';
           soon.classList.remove('is-visible');
         } else {
@@ -334,6 +348,7 @@
     userLoc = { lat: lat, lng: lng, label: label };
     var el = document.getElementById('locLabel');
     if (el) el.textContent = label;
+    if (window._geMapSetLL) window._geMapSetLL(lat, lng);
   }
 
   async function reverseGeocode(lat, lng) {
