@@ -113,21 +113,45 @@
   .ge-gb__head{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;margin-bottom:24px}
   .ge-gb__title{font-family:'Fraunces',serif;font-weight:600;font-size:26px;margin:0}
   .ge-gb__count{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.08em}
-  .ge-gb__share{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+  .ge-gb__share{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:28px}
   .ge-gb__share-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);
-    letter-spacing:.1em;text-transform:uppercase;align-self:center;margin-right:4px}
-  .ge-gb__btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;
-    padding:7px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;
-    cursor:pointer;text-decoration:none;color:var(--ink);transition:.15s}
-  .ge-gb__btn:hover{border-color:var(--jade);color:var(--jade)}
-  .ge-gb__btn--wa{border-color:#25D366;color:#25D366}
-  .ge-gb__btn--wa:hover{background:#25D366;color:#fff}
-  .ge-gb__btn--x{border-color:#000;color:#000}
-  .ge-gb__btn--x:hover{background:#000;color:#fff}
-  .ge-gb__btn--fb{border-color:#1877F2;color:#1877F2}
-  .ge-gb__btn--fb:hover{background:#1877F2;color:#fff}
-  .ge-gb__btn--line{border-color:#06C755;color:#06C755}
-  .ge-gb__btn--line:hover{background:#06C755;color:#fff}
+    letter-spacing:.1em;text-transform:uppercase;margin-right:4px}
+  .ge-gb__icon{width:48px;height:48px;border-radius:14px;border:none;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    text-decoration:none;transition:transform .15s,box-shadow .15s;
+    box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  .ge-gb__icon:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.18)}
+  .ge-gb__icon svg{display:block}
+  .ge-gb__icon--wa{background:#25D366}
+  .ge-gb__icon--x{background:#000}
+  .ge-gb__icon--fb{background:#1877F2}
+  .ge-gb__icon--line{background:#06C755}
+  .ge-gb__icon--ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
+  /* Instagram modal */
+  .ge-gb__ig-overlay{position:fixed;inset:0;background:rgba(43,34,48,.88);
+    z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}
+  .ge-gb__ig-overlay.open{display:flex}
+  .ge-gb__ig-panel{background:var(--paper);border-radius:20px;
+    max-width:520px;width:100%;max-height:90svh;overflow-y:auto;padding:28px 28px 32px}
+  .ge-gb__ig-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .ge-gb__ig-title{font-family:'Fraunces',serif;font-weight:600;font-size:22px;margin:0}
+  .ge-gb__ig-close{background:none;border:none;cursor:pointer;font-size:22px;
+    color:var(--ink-soft);line-height:1;padding:4px}
+  .ge-gb__ig-tmpl-row{display:flex;gap:8px;margin-bottom:18px}
+  .ge-gb__ig-tmpl{font-family:'Fraunces',serif;font-weight:600;font-size:14px;
+    padding:8px 18px;border-radius:999px;border:1.5px solid var(--line);
+    background:#fff;cursor:pointer;transition:.15s;color:var(--ink-soft)}
+  .ge-gb__ig-tmpl.active{background:var(--jade);border-color:var(--jade);color:#fff}
+  .ge-gb__ig-preview{display:flex;justify-content:center;margin-bottom:18px;
+    background:#e8e0d4;border-radius:12px;padding:16px;min-height:240px;align-items:center}
+  .ge-gb__ig-preview canvas{border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    max-width:100%;height:auto}
+  .ge-gb__ig-dl{display:block;width:100%;font-family:'Fraunces',serif;font-weight:600;
+    font-size:16px;background:var(--jade);color:#fff;border:none;border-radius:999px;
+    padding:12px 24px;cursor:pointer;transition:.15s;margin-bottom:12px}
+  .ge-gb__ig-dl:hover{background:var(--ink)}
+  .ge-gb__ig-tip{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);
+    text-align:center;letter-spacing:.06em;line-height:1.6}
   .ge-gb__form{background:#fff;border:1px solid var(--line);border-radius:16px;
     padding:24px 28px;margin-bottom:36px}
   .ge-gb__form-title{font-family:'Fraunces',serif;font-weight:600;font-size:18px;
@@ -269,22 +293,41 @@
 
     <div class="ge-gb__share">
       <span class="ge-gb__share-label">Share</span>
-      <a class="ge-gb__btn ge-gb__btn--wa" id="gb-share-wa" href="#" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.524 5.855L0 24l6.34-1.503A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.893 0-3.667-.525-5.183-1.437l-.371-.221-3.763.892.94-3.667-.242-.381A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-        WhatsApp
+      <a class="ge-gb__icon ge-gb__icon--wa" id="gb-share-wa" href="#" target="_blank" rel="noopener" title="Share on WhatsApp" aria-label="Share on WhatsApp">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.524 5.855L0 24l6.34-1.503A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.893 0-3.667-.525-5.183-1.437l-.371-.221-3.763.892.94-3.667-.242-.381A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
       </a>
-      <a class="ge-gb__btn ge-gb__btn--x" id="gb-share-x" href="#" target="_blank" rel="noopener">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.26 5.632 5.904-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        X / Twitter
+      <a class="ge-gb__icon ge-gb__icon--x" id="gb-share-x" href="#" target="_blank" rel="noopener" title="Share on X / Twitter" aria-label="Share on X">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.26 5.632 5.904-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
       </a>
-      <a class="ge-gb__btn ge-gb__btn--fb" id="gb-share-fb" href="#" target="_blank" rel="noopener">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
-        Facebook
+      <a class="ge-gb__icon ge-gb__icon--fb" id="gb-share-fb" href="#" target="_blank" rel="noopener" title="Share on Facebook" aria-label="Share on Facebook">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
       </a>
-      <a class="ge-gb__btn ge-gb__btn--line" id="gb-share-line" href="#" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-        LINE
+      <a class="ge-gb__icon ge-gb__icon--line" id="gb-share-line" href="#" target="_blank" rel="noopener" title="Share on LINE" aria-label="Share on LINE">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
       </a>
+      <button class="ge-gb__icon ge-gb__icon--ig" onclick="gbIgOpen()" title="Create Instagram image" aria-label="Create Instagram shareable image">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      </button>
+    </div>
+
+    <!-- Instagram export modal -->
+    <div class="ge-gb__ig-overlay" id="gb-ig-overlay" onclick="gbIgOverlayClick(event)">
+      <div class="ge-gb__ig-panel">
+        <div class="ge-gb__ig-header">
+          <h3 class="ge-gb__ig-title">Share to Instagram</h3>
+          <button class="ge-gb__ig-close" onclick="gbIgClose()" aria-label="Close">&times;</button>
+        </div>
+        <div class="ge-gb__ig-tmpl-row">
+          <button class="ge-gb__ig-tmpl active" onclick="gbIgTmpl('square',this)">Square post</button>
+          <button class="ge-gb__ig-tmpl" onclick="gbIgTmpl('story',this)">Story</button>
+          <button class="ge-gb__ig-tmpl" onclick="gbIgTmpl('dark',this)">Dark card</button>
+        </div>
+        <div class="ge-gb__ig-preview">
+          <canvas id="gb-ig-canvas"></canvas>
+        </div>
+        <button class="ge-gb__ig-dl" onclick="gbIgDownload()">&#8659; Download image</button>
+        <p class="ge-gb__ig-tip">Save the image &rarr; open Instagram &rarr; share as post or story</p>
+      </div>
     </div>
 
     <div class="ge-gb__form">
@@ -442,12 +485,198 @@
   /* ── Guestbook ── */
   (function(){
     var SITE = 'https://goelsewhere.travel';
-    var TEXT = encodeURIComponent('Signing the Go Elsewhere World Cup guestbook ✨ ' + SITE + ' #WorldCup2026');
+    var TEXT = encodeURIComponent('Signing the Go Elsewhere World Cup guestbook \u2728 ' + SITE + ' #WorldCup2026');
     document.getElementById('gb-share-wa').href   = 'https://wa.me/?text=' + TEXT;
     document.getElementById('gb-share-x').href    = 'https://twitter.com/intent/tweet?text=' + TEXT;
     document.getElementById('gb-share-fb').href   = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(SITE);
     document.getElementById('gb-share-line').href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(SITE);
   })();
+
+  /* ── Instagram canvas export ── */
+  var _igTmpl = 'square';
+  var _igCanvas = null;
+
+  function gbIgOpen() {
+    _igCanvas = document.getElementById('gb-ig-canvas');
+    document.getElementById('gb-ig-overlay').classList.add('open');
+    gbIgDraw(_igTmpl);
+  }
+  function gbIgClose() { document.getElementById('gb-ig-overlay').classList.remove('open'); }
+  function gbIgOverlayClick(e) { if (e.target === document.getElementById('gb-ig-overlay')) gbIgClose(); }
+  function gbIgTmpl(name, btn) {
+    _igTmpl = name;
+    document.querySelectorAll('.ge-gb__ig-tmpl').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    gbIgDraw(name);
+  }
+
+  async function gbIgDraw(tmpl) {
+    await document.fonts.ready;
+    var c = _igCanvas;
+    var isStory = tmpl === 'story';
+    var isDark  = tmpl === 'dark';
+    var W = 1080, H = isStory ? 1920 : 1080;
+    c.width = W; c.height = H;
+
+    // Scale for preview display
+    var maxW = Math.min(320, document.querySelector('.ge-gb__ig-preview').clientWidth - 32);
+    var scale = maxW / W;
+    c.style.width  = Math.round(W * scale) + 'px';
+    c.style.height = Math.round(H * scale) + 'px';
+
+    var ctx = c.getContext('2d');
+
+    // ── helpers ──
+    function fill(color) { ctx.fillStyle = color; ctx.fillRect(0, 0, W, H); }
+    function text(str, font, color, x, y, align) {
+      ctx.font = font; ctx.fillStyle = color;
+      ctx.textAlign = align || 'center';
+      ctx.fillText(str, x, y);
+    }
+    function dashedRect(x, y, w, h, dash) {
+      ctx.setLineDash(dash || [18, 10]);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(43,34,48,.18)';
+      ctx.strokeRect(x, y, w, h);
+      ctx.setLineDash([]);
+    }
+    function roundRect(x, y, w, h, r, fillColor) {
+      ctx.beginPath();
+      ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+      ctx.arcTo(x+w,y,x+w,y+r,r); ctx.lineTo(x+w,y+h-r);
+      ctx.arcTo(x+w,y+h,x+w-r,y+h,r); ctx.lineTo(x+r,y+h);
+      ctx.arcTo(x,y+h,x,y+h-r,r); ctx.lineTo(x,y+r);
+      ctx.arcTo(x,y,x+r,y,r); ctx.closePath();
+      ctx.fillStyle = fillColor; ctx.fill();
+    }
+
+    var PAPER = '#FAF4EA', INK = '#2B2230', INK_SOFT = '#5b5360';
+    var JADE = '#1E7A6B', POPPY = '#CE3B2B', GOLD = '#E0A02E';
+
+    if (tmpl === 'square') {
+      // ── Square post: warm paper, centered ───────────────────────────────
+      fill(PAPER);
+      dashedRect(32, 32, W-64, H-64);
+
+      // top eyebrow
+      text('\u2726 GO ELSEWHERE \u2726', '500 36px "Space Mono", monospace', GOLD, W/2, 120);
+
+      // main heading
+      ctx.font = '600 108px "Fraunces", Georgia, serif';
+      ctx.fillStyle = INK;
+      ctx.textAlign = 'center';
+      // word-wrap manually
+      var words = 'Welcome to America.'.split(' ');
+      var line = '', lines = [], maxW2 = W - 160;
+      for (var i = 0; i < words.length; i++) {
+        var test = line ? line + ' ' + words[i] : words[i];
+        if (ctx.measureText(test).width > maxW2 && line) { lines.push(line); line = words[i]; }
+        else line = test;
+      }
+      lines.push(line);
+      var yStart = H/2 - (lines.length * 120)/2 - 60;
+      lines.forEach(function(l, idx) { ctx.fillText(l, W/2, yStart + idx*120); });
+
+      // jade rule
+      ctx.fillStyle = JADE;
+      ctx.fillRect(W/2 - 60, yStart + lines.length*120 + 20, 120, 4);
+
+      // sub
+      text('2026 FIFA World Cup \u00b7 United States', '400 34px "Hanken Grotesk", system-ui', INK_SOFT, W/2, yStart + lines.length*120 + 90);
+
+      // bottom URL
+      roundRect(W/2 - 240, H - 140, 480, 72, 36, JADE);
+      text('goelsewhere.travel', '600 32px "Space Mono", monospace', '#fff', W/2, H - 96);
+
+    } else if (tmpl === 'story') {
+      // ── Story: vertical, paper top / jade bottom ─────────────────────────
+      fill(PAPER);
+
+      // jade gradient bottom half
+      var grad = ctx.createLinearGradient(0, H*0.55, 0, H);
+      grad.addColorStop(0, PAPER);
+      grad.addColorStop(1, '#0f3d34');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, H*0.55, W, H*0.45);
+
+      // top stamp area
+      dashedRect(48, 48, W-96, H*0.5 - 80);
+      text('\u2726 GO ELSEWHERE \u2726', '500 38px "Space Mono", monospace', GOLD, W/2, 160);
+
+      // big heading
+      ctx.font = '600 120px "Fraunces", Georgia, serif';
+      ctx.fillStyle = INK;
+      ctx.textAlign = 'center';
+      ctx.fillText('Welcome', W/2, 380);
+      ctx.fillText('to', W/2, 510);
+      ctx.fillText('America.', W/2, 640);
+
+      // poppy accent
+      ctx.fillStyle = POPPY;
+      ctx.fillRect(W/2 - 80, 700, 160, 6);
+
+      // mid text
+      text('2026 FIFA World Cup', '400 44px "Hanken Grotesk", system-ui', INK_SOFT, W/2, 810);
+
+      // bottom section on dark bg
+      text('Come explore with us', '600 52px "Fraunces", Georgia, serif', PAPER, W/2, H*0.72);
+      text('Parks \u00b7 Heritage \u00b7 Main Streets \u00b7 Beaches', '400 34px "Hanken Grotesk", system-ui', 'rgba(250,244,234,.7)', W/2, H*0.72 + 70);
+
+      // URL pill
+      roundRect(W/2 - 260, H - 180, 520, 84, 42, 'rgba(255,255,255,.15)');
+      ctx.strokeStyle = 'rgba(255,255,255,.4)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.roundRect(W/2 - 260, H - 180, 520, 84, 42);
+      ctx.stroke();
+      text('goelsewhere.travel', '600 36px "Space Mono", monospace', PAPER, W/2, H - 126);
+      text('#WorldCup2026  #GoElsewhere', '400 28px "Space Mono", monospace', 'rgba(250,244,234,.55)', W/2, H - 64);
+
+    } else {
+      // ── Dark card ────────────────────────────────────────────────────────
+      fill(INK);
+
+      // subtle texture lines
+      ctx.strokeStyle = 'rgba(250,244,234,.04)';
+      ctx.lineWidth = 1;
+      for (var xi = 0; xi < W; xi += 48) {
+        ctx.beginPath(); ctx.moveTo(xi, 0); ctx.lineTo(xi, H); ctx.stroke();
+      }
+
+      // gold top bar
+      ctx.fillStyle = GOLD;
+      ctx.fillRect(0, 0, W, 10);
+
+      // centered white card
+      var cardY = isStory ? 300 : 180, cardH = isStory ? 600 : 540;
+      roundRect(80, cardY, W-160, cardH, 24, PAPER);
+
+      // card content
+      text('\u2726 GO ELSEWHERE \u2726', '500 30px "Space Mono", monospace', GOLD, W/2, cardY + 70);
+      ctx.font = '600 88px "Fraunces", Georgia, serif';
+      ctx.fillStyle = INK;
+      ctx.textAlign = 'center';
+      ctx.fillText('Welcome to', W/2, cardY + 200);
+      ctx.fillText('America.', W/2, cardY + 300);
+      ctx.fillStyle = JADE;
+      ctx.fillRect(W/2 - 50, cardY + 330, 100, 4);
+      text('2026 FIFA World Cup', '400 32px "Hanken Grotesk", system-ui', INK_SOFT, W/2, cardY + 390);
+      text('goelsewhere.travel', '600 28px "Space Mono", monospace', JADE, W/2, cardY + 460);
+
+      // bottom tagline
+      text('Explore America. Go Elsewhere.', '400 italic 36px "Fraunces", Georgia, serif', 'rgba(250,244,234,.5)', W/2, H - 80);
+    }
+  }
+
+  function gbIgDownload() {
+    if (!_igCanvas) return;
+    var names = { square: 'goelsewhere-square.png', story: 'goelsewhere-story.png', dark: 'goelsewhere-dark.png' };
+    var a = document.createElement('a');
+    a.href = _igCanvas.toDataURL('image/png');
+    a.download = names[_igTmpl] || 'goelsewhere.png';
+    a.click();
+  }
 
   function gbFmt(ts){
     try{return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return '';}
