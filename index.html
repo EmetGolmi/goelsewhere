@@ -107,6 +107,60 @@
   @media(max-width:760px){
     .ge-mapwidget{padding:20px 16px 28px}
     .ge-mapwidget__tab{font-size:14px;padding:10px 14px}}
+  
+  /* ── Guestbook ─────────────────────────────── */
+  .ge-gb{padding:36px 40px 44px;border-bottom:1px solid var(--line)}
+  .ge-gb__head{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;margin-bottom:24px}
+  .ge-gb__title{font-family:'Fraunces',serif;font-weight:600;font-size:26px;margin:0}
+  .ge-gb__count{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.08em}
+  .ge-gb__share{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+  .ge-gb__share-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);
+    letter-spacing:.1em;text-transform:uppercase;align-self:center;margin-right:4px}
+  .ge-gb__btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;
+    padding:7px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;
+    cursor:pointer;text-decoration:none;color:var(--ink);transition:.15s}
+  .ge-gb__btn:hover{border-color:var(--jade);color:var(--jade)}
+  .ge-gb__btn--wa{border-color:#25D366;color:#25D366}
+  .ge-gb__btn--wa:hover{background:#25D366;color:#fff}
+  .ge-gb__btn--x{border-color:#000;color:#000}
+  .ge-gb__btn--x:hover{background:#000;color:#fff}
+  .ge-gb__btn--fb{border-color:#1877F2;color:#1877F2}
+  .ge-gb__btn--fb:hover{background:#1877F2;color:#fff}
+  .ge-gb__btn--line{border-color:#06C755;color:#06C755}
+  .ge-gb__btn--line:hover{background:#06C755;color:#fff}
+  .ge-gb__form{background:#fff;border:1px solid var(--line);border-radius:16px;
+    padding:24px 28px;margin-bottom:36px}
+  .ge-gb__form-title{font-family:'Fraunces',serif;font-weight:600;font-size:18px;
+    margin:0 0 18px}
+  .ge-gb__row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .ge-gb__field{display:flex;flex-direction:column;gap:5px}
+  .ge-gb__field label{font-family:'Space Mono',monospace;font-size:11px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+  .ge-gb__field input,.ge-gb__field textarea{font-family:'Hanken Grotesk',sans-serif;
+    font-size:15px;padding:9px 13px;border:1px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);outline:none;resize:none;transition:.15s}
+  .ge-gb__field input:focus,.ge-gb__field textarea:focus{border-color:var(--jade)}
+  .ge-gb__field textarea{min-height:80px}
+  .ge-gb__submit{font-family:'Fraunces',serif;font-weight:600;font-size:16px;
+    background:var(--jade);color:#fff;border:none;border-radius:999px;
+    padding:11px 28px;cursor:pointer;transition:.15s;margin-top:4px}
+  .ge-gb__submit:hover{background:var(--ink)}
+  .ge-gb__submit:disabled{opacity:.5;cursor:default}
+  .ge-gb__ok{display:none;color:var(--jade);font-weight:600;margin-top:10px;font-size:14px}
+  .ge-gb__entries{display:flex;flex-direction:column;gap:14px}
+  .ge-gb__entry{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .ge-gb__entry-top{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+  .ge-gb__entry-name{font-family:'Fraunces',serif;font-weight:600;font-size:16px}
+  .ge-gb__entry-from{font-size:13px;color:var(--ink-soft)}
+  .ge-gb__entry-msg{font-size:15px;line-height:1.55;color:var(--ink)}
+  .ge-gb__entry-ts{font-family:'Space Mono',monospace;font-size:10px;color:var(--ink-soft);
+    opacity:.6;margin-top:8px}
+  .ge-gb__empty{font-family:'Fraunces',serif;font-size:18px;color:var(--ink-soft);
+    text-align:center;padding:32px 0}
+  @media(max-width:760px){
+    .ge-gb{padding:24px 16px 36px}
+    .ge-gb__form{padding:18px 16px}
+    .ge-gb__row{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -206,6 +260,61 @@
 
 
   
+
+  <section class="ge-gb" aria-label="Guestbook">
+    <div class="ge-gb__head">
+      <h2 class="ge-gb__title">Sign the guestbook</h2>
+      <span class="ge-gb__count" id="gb-count"></span>
+    </div>
+
+    <div class="ge-gb__share">
+      <span class="ge-gb__share-label">Share</span>
+      <a class="ge-gb__btn ge-gb__btn--wa" id="gb-share-wa" href="#" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.524 5.855L0 24l6.34-1.503A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.893 0-3.667-.525-5.183-1.437l-.371-.221-3.763.892.94-3.667-.242-.381A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        WhatsApp
+      </a>
+      <a class="ge-gb__btn ge-gb__btn--x" id="gb-share-x" href="#" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.26 5.632 5.904-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X / Twitter
+      </a>
+      <a class="ge-gb__btn ge-gb__btn--fb" id="gb-share-fb" href="#" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <a class="ge-gb__btn ge-gb__btn--line" id="gb-share-line" href="#" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        LINE
+      </a>
+    </div>
+
+    <div class="ge-gb__form">
+      <p class="ge-gb__form-title">Where are you from? Tell us something you enjoyed.</p>
+      <div class="ge-gb__row">
+        <div class="ge-gb__field">
+          <label for="gb-name">Your name <span style="opacity:.5">(optional)</span></label>
+          <input id="gb-name" type="text" placeholder="e.g. Yuki" maxlength="60" autocomplete="given-name">
+        </div>
+        <div class="ge-gb__field">
+          <label for="gb-place">City / town</label>
+          <input id="gb-place" type="text" placeholder="e.g. Osaka" maxlength="80" autocomplete="address-level2">
+        </div>
+      </div>
+      <div class="ge-gb__field" style="margin-bottom:14px">
+        <label for="gb-country">Country</label>
+        <input id="gb-country" type="text" placeholder="e.g. Japan" maxlength="80" autocomplete="country-name">
+      </div>
+      <div class="ge-gb__field" style="margin-bottom:16px">
+        <label for="gb-message">Something you enjoyed in America</label>
+        <textarea id="gb-message" placeholder="The national parks, the diners, the people…" maxlength="280"></textarea>
+      </div>
+      <button class="ge-gb__submit" id="gb-submit" onclick="gbSubmit()">Sign the guestbook ✦</button>
+      <p class="ge-gb__ok" id="gb-ok">✦ Thank you for signing! Welcome to America.</p>
+    </div>
+
+    <div class="ge-gb__entries" id="gb-entries">
+      <p class="ge-gb__empty">Be the first to sign!</p>
+    </div>
+  </section>
 
   <footer class="foot">
     <div class="wm">Go <span>Elsewhere</span></div>
@@ -329,6 +438,71 @@
     alert('Location not found. Try a US ZIP code or city name.');
   }
 
+
+  /* ── Guestbook ── */
+  (function(){
+    var SITE = 'https://goelsewhere.travel';
+    var TEXT = encodeURIComponent('Signing the Go Elsewhere World Cup guestbook ✨ ' + SITE + ' #WorldCup2026');
+    document.getElementById('gb-share-wa').href   = 'https://wa.me/?text=' + TEXT;
+    document.getElementById('gb-share-x').href    = 'https://twitter.com/intent/tweet?text=' + TEXT;
+    document.getElementById('gb-share-fb').href   = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(SITE);
+    document.getElementById('gb-share-line').href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(SITE);
+  })();
+
+  function gbFmt(ts){
+    try{return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch(e){return '';}
+  }
+  function gbEsc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function gbRender(entries){
+    var el=document.getElementById('gb-entries');
+    var cnt=document.getElementById('gb-count');
+    if(cnt) cnt.textContent=entries.length ? entries.length+' entr'+(entries.length===1?'y':'ies') : '';
+    if(!entries.length){el.innerHTML='<p class="ge-gb__empty">Be the first to sign!</p>';return;}
+    el.innerHTML=entries.map(function(e){
+      var from=[e.place,e.country].filter(Boolean).join(', ');
+      return '<div class="ge-gb__entry">'
+        +'<div class="ge-gb__entry-top">'
+        +'<span class="ge-gb__entry-name">'+gbEsc(e.name)+'</span>'
+        +(from?'<span class="ge-gb__entry-from">from '+gbEsc(from)+'</span>':'')
+        +'</div>'
+        +'<div class="ge-gb__entry-msg">'+gbEsc(e.message)+'</div>'
+        +'<div class="ge-gb__entry-ts">'+gbFmt(e.ts)+'</div>'
+        +'</div>';
+    }).join('');
+  }
+  async function gbLoad(){
+    try{var r=await fetch('/api/guestbook');var d=await r.json();gbRender(d.entries||[]);}catch(e){}
+  }
+  async function gbSubmit(){
+    var btn=document.getElementById('gb-submit');
+    var ok=document.getElementById('gb-ok');
+    var country=document.getElementById('gb-country').value.trim();
+    var message=document.getElementById('gb-message').value.trim();
+    if(!country){document.getElementById('gb-country').focus();return;}
+    if(!message){document.getElementById('gb-message').focus();return;}
+    btn.disabled=true;
+    try{
+      var r=await fetch('/api/guestbook',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          name:document.getElementById('gb-name').value.trim(),
+          place:document.getElementById('gb-place').value.trim(),
+          country:country,message:message
+        })
+      });
+      var d=await r.json();
+      if(d.ok){
+        ok.style.display='block';
+        ['gb-name','gb-place','gb-country','gb-message'].forEach(function(id){document.getElementById(id).value='';});
+        gbLoad();
+      }
+    }catch(e){}
+    btn.disabled=false;
+  }
+  gbLoad();
 
   detectLocation();
 </script>

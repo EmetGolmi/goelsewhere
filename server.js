@@ -1,4 +1,6 @@
 require('dotenv').config();
+const fs   = require('fs');
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { Duffel } = require('@duffel/api');
@@ -1604,6 +1606,36 @@ app.post('/api/search', async (req, res) => {
     res.status(500).json({ error: 'Search failed', detail: err.message });
   }
 });
+
+// ── Guestbook ─────────────────────────────────────────────────────────────
+const GUESTBOOK_FILE = path.join(__dirname, 'guestbook.json');
+
+function loadGuestbook() {
+  try { return JSON.parse(fs.readFileSync(GUESTBOOK_FILE, 'utf8')); }
+  catch(e) { return []; }
+}
+
+app.get('/api/guestbook', (req, res) => {
+  res.json({ entries: loadGuestbook().slice(0, 100) });
+});
+
+app.post('/api/guestbook', (req, res) => {
+  const { name, place, country, message } = req.body || {};
+  if (!country || !message) return res.status(400).json({ error: 'country and message required' });
+  const entry = {
+    id: Date.now(),
+    name:    (name    || 'Anonymous').trim().slice(0, 60),
+    place:   (place   || '').trim().slice(0, 80),
+    country: country.trim().slice(0, 80),
+    message: message.trim().slice(0, 280),
+    ts: new Date().toISOString()
+  };
+  const entries = loadGuestbook();
+  entries.unshift(entry);
+  fs.writeFileSync(GUESTBOOK_FILE, JSON.stringify(entries.slice(0, 500)));
+  res.json({ ok: true, entry });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Go Elsewhere server running on http://localhost:${PORT}`);
